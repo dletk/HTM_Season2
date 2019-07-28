@@ -134,9 +134,10 @@ MEDIA_URL = "/media/"
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 200000000
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
 
