@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+    <title>NBK Olympia</title>
+    <style>
+        html {
+            min-height: 100%;
+            position: relative;
+        }
+        body {
+            background-color: #314B77;
+            min-width: 1280px;
+            margin-bottom: 30px;
+        }
+        footer {
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        {% if answerView %}
+        <div class="d-flex justify-content-center mt-5">
+            <span class="border rounded border-secondary p-5 mr-7" style="background-color: white">
+                <div id="questionContent" style="font-weight: bold; font-size: 20px"></div>
+            </span>
+        </div>
+        {% endif %}
+
+        <div class="d-flex justify-content-center mt-5">
+            <span class="border rounded border-secondary p-5 mr-7" style="background-color: white">
+                <h3 class="d-flex justify-content-center p-2">
+                    {% if answerView %}
+                    Nộp đáp án
+                    {% else %}
+                    Create new data
+                    {% endif %}
+                </h3>
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.as_p }}
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-outline-primary float-right">Submit</button>
+                </form>
+            </span>
+        </div>
+    </div>
+</body>
+<footer>
+    <div class="container">
+        <span>Developer: Duc Le (LE_MAI_THANH_DUC) - Jan 2019. Report bugs: <a href="mailto:duc.mtle@gmail.com">duc.mtle@gmail.com</a></span>
+    </div>
+</footer>
+
+<script src="{% static 'jquery.js' %}"></script>
+<script src="{% static 'popper.min.js' %}"></script>
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script>
+    var formGroups = $('p');
+    for(let i=0; i < formGroups.length; i++) {
+        var ele = formGroups[i];
+        $(ele).replaceWith("<div class='form-group'>" + $(ele).html() + "</div>");
+    }
+    $('input').addClass("form-control");
+
+    $("input[type='file']").parent().removeClass("form-group").addClass("custom-file");
+    $("input[type='file']").removeClass("form-control").addClass("custom-file-input");
+    $(".custom-file label").addClass("custom-file-label");
+
+    $('li').addClass("text-muted");
+    $('.helptext').addClass("text-muted");
+
+    $('.errorlist li').removeClass("text-muted");
+    $(".errorlist li").attr("style", "color:red");
+
+    // Handle displaying the filename
+    $("input[type='file']").on('change', function () {
+        //get the file name
+        var fileName = $(this).val();
+        console.log(fileName);
+        //replace the "Choose a file" label
+        $('.custom-file-label').html(fileName);
+    })
+
+    // Make AJAX calls tot update the current question
+    {% if answerView %}
+    setInterval(function() {
+        $.ajax({
+            url: "{% url 'getCurrentQuestion' %}",
+            success: function(data) {
+                data = JSON.parse(data);
+                $("#questionContent").text(data.question);
+            }
+        })
+    }, 500);
+    {% endif %}
+
+</script>
+
+</html>
