@@ -25,7 +25,8 @@ SECRET_KEY = 'r)3j_qm2h3!basn_^qjw653g*3w4&#)#*5e=u4t3l=-06ysqef'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Set to * to allow all connection
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'HTM_Season2.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -106,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
 USE_I18N = True
 
@@ -123,5 +124,19 @@ STATIC_URL = '/static/'
 
 
 # ================= PROJECT CONFIGURATION ==================
-AUTH_USER_MODEL = "userprofile.MyUser" 
+AUTH_USER_MODEL = "userprofile.MyUser"
+
+
+# Directory to contain user-uploaded files
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
+
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 200000000
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
