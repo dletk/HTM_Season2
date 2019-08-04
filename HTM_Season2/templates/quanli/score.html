@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    <style>
+        .thisinh {
+            display: block;
+            font-size: 50px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .name {
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% for score in scores %}
+        <div class="thisinh col-12">
+            <div class="row">
+                <span class="name col-6">{{ score.user }}: </span>
+                <input class="diem col-6" type="number" id="{{score.user.username}}" value="{{score.score}}">
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(".diem").keyup(function() {
+        // Get the id
+        var username = $(this).attr("id");
+        // Get the grade
+        var grade = $(this).val();
+        console.log("CHANGED");
+        $.ajax({
+            url: "{% url 'score' %}" + username + "/" + grade,
+            success: function() {
+
+            }
+        });
+    })
+</script>
+{% endblock %}
