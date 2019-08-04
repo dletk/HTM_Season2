@@ -127,6 +127,8 @@ STATIC_URL = '/static/'
 # ================= PROJECT CONFIGURATION ==================
 AUTH_USER_MODEL = "userprofile.MyUser"
 
+LOGIN_REDIRECT_URL = "/"
+
 
 # Directory to contain user-uploaded files
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
