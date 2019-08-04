@@ -9,3 +9,6 @@ db.sqlite3
 
 # Ignore vscode settings
 .vscode/
+
+# Ignore the media file
+media/*

@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'userprofile',
-    'khoidong',
     'quanli',
+    'khoidong',
 ]
 
 MIDDLEWARE = [

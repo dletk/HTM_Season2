@@ -102,8 +102,17 @@
                 <li class="nav-item">
                     <a class="nav-link btn btn-outline-warning" >Trả lời câu hỏi</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link btn btn-outline-warning">Thêm câu hỏi</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="createNewQuestion" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Thêm câu hỏi
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="createNewQuestion">
+                        <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="{% url 'newKhoiDongQuestion'%}">Khởi động</a>
+                        <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="">Vòng 2</a>
+                        <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="">Vòng 3</a>
+                        <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="">Vòng 4</a>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link btn btn-outline-primary" href="{% url 'logout' %}">Logout, {{user}}</a>
