@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'userprofile',
     'khoidong',
+    'quanli',
 ]
 
 MIDDLEWARE = [
@@ -128,6 +129,7 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = "userprofile.MyUser"
 
 LOGIN_REDIRECT_URL = "/"
+LOGIN_URL = "/user/login"
 
 
 # Directory to contain user-uploaded files
