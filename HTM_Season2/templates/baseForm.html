@@ -95,7 +95,7 @@
     {% if answerView %}
     setInterval(function() {
         $.ajax({
-            url: "{% url 'getCurrentQuestion' %}",
+            url: "{% url 'currentQuestion' %}",
             success: function(data) {
                 data = JSON.parse(data);
                 $("#questionContent").text(data.question);

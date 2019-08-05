@@ -1,5 +1,7 @@
 from django.db import models
 
+from userprofile.models import MyUser
+
 # Get the directory of the MEDIA folder for this app
 
 
@@ -39,3 +41,21 @@ class KhoiDongQuestion(models.Model):
 
     def __str__(self):
         return "Khởi động: Câu hỏi {}".format(self.questionID)
+
+
+class KhoiDongAnswer(models.Model):
+    """
+    Model for the answer of constestant for Khoi Dong round
+    """
+
+    # The question associated with this answer
+    question = models.ForeignKey(to=KhoiDongQuestion, on_delete=models.CASCADE)
+    # The contestant associted with this answer
+    thisinh = models.ForeignKey(to=MyUser, on_delete=models.CASCADE)
+
+    answer = models.CharField(max_length=500)
+
+    def __str__(self):
+        return "Câu hỏi số {}, thí sinh: {}: {}".format(self.question.questionID, 
+                                                        self.thisinh, 
+                                                        self.answer)

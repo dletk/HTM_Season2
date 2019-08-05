@@ -71,12 +71,12 @@
     });
 
 
-    function makeAjaxCall(questionContent) {
+    function makeAjaxCall(questionContent, currentQuestionID) {
         // Make the AJAX call to notify the current question to the server and other screen of contestant
         $.ajax({
             url: "{% url 'currentQuestion'%}",
             method: "POST",
-            data: {"question":questionContent},
+            data: {"question":questionContent, "questionID":currentQuestionID},
             dataType: "json",
             traditional: true,
             success: function (data) {
@@ -146,13 +146,15 @@
             }
         
             $("#questionContent").text(questionContent);
-            $("#questionNumber").text(currentQuestionID + 1);
+            // currentQuestionID begin with 0 for array index, but should be 1 in the database
+            currentQuestionID++;
+            $("#questionNumber").text(currentQuestionID);
+            
             
             // Update the current question to the server
-            makeAjaxCall(questionContent);
+            makeAjaxCall(questionContent, currentQuestionID);
+            
         }
-        
-        currentQuestionID++;
     });
 </script>
 {% endblock %}
