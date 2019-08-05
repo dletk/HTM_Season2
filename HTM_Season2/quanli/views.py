@@ -63,21 +63,22 @@ class NewAnswer(generic.CreateView):
 
     # Handle the post method to inlcude question number and
     def post(self, request):
-        user = request.user
-        # Get the form data submitted by user
-        formAnswer = self.form_class(request.POST)
-        # Create an answer instance but not yet saved
-        answer = formAnswer.save(commit=False)
-        answer.thisinh = user
+        # If currently no question is being presented, prevent thi sinh to submit answer
+        if currentQuestionID > 0:
+            user = request.user
+            # Get the form data submitted by user
+            formAnswer = self.form_class(request.POST)
+            # Create an answer instance but not yet saved
+            answer = formAnswer.save(commit=False)
+            answer.thisinh = user
 
-        # Find the correct round
-        if currentRound == "khoidong":
-            print(currentQuestionID)
-            answer.question = KhoiDongQuestion.objects.get(questionID=currentQuestionID)
-        # TODO: Add other condition for other round
-    
-        # Save the answer
-        answer.save()
+            # Find the correct round
+            if currentRound == "khoidong":
+                answer.question = KhoiDongQuestion.objects.get(questionID=currentQuestionID)
+            # TODO: Add other condition for other round
+        
+            # Save the answer
+            answer.save()
 
         # Return a new page for the next question
         form = self.form_class()
