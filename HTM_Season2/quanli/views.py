@@ -107,7 +107,7 @@ def currentQuestion(request):
             
             # Update the data for server to know about current question info
             currentQuestionContent = dataPost.get("question")
-            currentQuestionID = dataPost.get("questionID")
+            currentQuestionID = int(dataPost.get("questionID"))
             return HttpResponse("Updated!")
         else:
             return HttpResponseForbidden()
