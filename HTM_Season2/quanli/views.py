@@ -55,7 +55,7 @@ class NewAnswer(generic.CreateView):
     """
     Class-based view to submit a new answer to the database
     """
-    global currentQuestion, currentRound
+    global currentQuestionID, currentRound
 
     form_class = FORM_CLASSES[currentRound]
     success_url = reverse_lazy("answer")
