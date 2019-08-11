@@ -29,6 +29,8 @@ urlpatterns = [
     path("quanli/", include("quanli.urls")),
     # Handle the KhoiDong app request
     path("khoidong/", include("khoidong.urls")),
+    # Handle the tangtoc app request
+    path("tangtoc", include("tangtoc.urls")),
     # Using simple class-view to display the homepage (no need for creating an app)
     path("", login_required(TemplateView.as_view(template_name="home.html")), name="home"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
