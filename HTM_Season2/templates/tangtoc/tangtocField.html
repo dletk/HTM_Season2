@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+    <style>
+        .col, .row {
+            text-align: center;
+        }
+        button {
+            margin-bottom: 0.3em;
+            margin-top: 0.5em;
+        }
+        #question {
+            background-color: bisque;
+            margin-top: 2em;
+        }
+        #questionContent, .questionNumber {
+            font-size: 40px;
+        }
+        .questionNumber, #nextQuestion {
+            margin-top: 0.1em;
+        }
+        .questionNumber {
+            margin-bottom: 0;
+            color: red;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% for field in fields %}
+        <div class="col-4">
+            <a class="btn btn-primary">{{field.name}}</a>
+        </div>
+    {% endfor %}
+    {% csrf_token %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    // function makeAjaxCall(questionContent, currentQuestionID) {
+    //     // Make the AJAX call to notify the current question to the server and other screen of contestant
+    //     $.ajax({
+    //         url: "{% url 'currentQuestion'%}",
+    //         method: "POST",
+    //         data: {"question":questionContent, "questionID":currentQuestionID},
+    //         dataType: "json",
+    //         traditional: true,
+    //         success: function (data) {
+    //             // Do nothing
+    //         }
+    //     });
+    // }
+</script>
+{% endblock %}
