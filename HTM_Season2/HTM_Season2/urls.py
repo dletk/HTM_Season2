@@ -29,6 +29,8 @@ urlpatterns = [
     path("quanli/", include("quanli.urls")),
     # Handle the KhoiDong app request
     path("khoidong/", include("khoidong.urls")),
+    # Handle the VuotSong app request
+    path("vuotsong/", include("vuotsong.urls")),
     # Handle the tangtoc app request
     path("tangtoc", include("tangtoc.urls")),
     # Using simple class-view to display the homepage (no need for creating an app)

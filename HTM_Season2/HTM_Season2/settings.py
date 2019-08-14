@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'userprofile',
     'quanli',
     'khoidong',
+    'vuotsong',
     'tangtoc',
 ]
 
