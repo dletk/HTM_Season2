@@ -80,9 +80,9 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="createNewQuestion">
                         <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="{% url 'newKhoiDongQuestion'%}">Khởi động</a>
-                        <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="">Vòng 2</a>
+                        <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="{% url 'newVuotSongQuestion' %}">Vượt sóng</a>
                         <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="{% url 'newTangTocQuestion'%}">Bứt phá</a>
-                        <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="">Vòng 4</a>
+                        <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="">Về đích</a>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -99,7 +99,7 @@
 </body>
 <footer>
     <div class="container">
-        <span>Developer: Duc Le (LE_MAI_THANH_DUC) - Jan 2019. Report bugs: <a href="mailto:duc.mtle@gmail.com">duc.mtle@gmail.com</a></span>
+        <span>Developers: Duc Le (LE_MAI_THANH_DUC), Luong Doan (DOAN_NGUYEN_THANH_LUONG) - 2019. Report bugs: <a href="mailto:duc.mtle@gmail.com">duc.mtle@gmail.com</a>, <a href="mailto:doannguyenthanhluong@gmail.com">doannguyenthanhluong@gmail.com</a></span>
     </div>
 </footer>
 <script src="{% static 'jquery.js' %}"></script>
