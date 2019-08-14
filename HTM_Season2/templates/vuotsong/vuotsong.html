@@ -60,10 +60,11 @@ body{
 }
 .square{  
   margin: 0 1px 1px 0;
+  border-radius: 4px 4px 8px 8px;
   display: inline-block;
   font: 24px Calibri;
-  width: 1.25em;
-  height: 1.25em;
+  width: 1.30em;
+  height: 1.30em;
   line-height: 1.25em;
   vertical-align: middle;
   
@@ -264,8 +265,9 @@ function ToggleInputBoxes(active){
 function GetWordsFromInput(){
   wordArr = []
   for(var idx=0; idx<questions.length; idx++){
-    let currentQuestion = questions[idx]
-    wordArr.push(currentQuestion["answer"])
+    let currentQuestion = questions[idx];
+    let currentAnswer = currentQuestion["answer"];
+    wordArr.push(currentAnswer)
   }
   // wordArr = ["DANANG", "TAMKY", "GIALAI", "LONGAN"];  
   // for(var i=0,val,w=document.getElementsByClassName("word");i<w.length;i++){
