@@ -56,11 +56,15 @@ def toDict(question: KhoiDongQuestion):
     else:
         return dict(questionText=question.questionText, answer=question.answer)
 
-
+@login_required
 def getQuestions(request):
     """
     Function to get all the questions for Khoi Dong in the format for JSON array
     """
+    if not request.user.is_staff:
+        return render(request, template_name="home.html",
+              context={"message": "Xin lỗi, bạn không được phép truy cập tính năng này"})
+
     questions = [toDict(question) for question in KhoiDongQuestion.objects.all().order_by("questionID")]
 
     return render(request, template_name="khoidong/khoidong.html", context=dict(questions=questions))

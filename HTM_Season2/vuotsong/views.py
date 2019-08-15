@@ -40,10 +40,15 @@ def toDict(question: VuotSongQuestion):
     else:
         return dict(questionText=question.questionText, answer=question.answer)
 
+@login_required
 def getQuestions(request):
     """
     Function to view all questions for Vuot Song round. Format: JSON
     """
+    if not request.user.is_staff:
+        return render(request, template_name="home.html",
+              context={"message": "Xin lỗi, bạn không được phép truy cập tính năng này"})
+
     questions = [toDict(question) for question in VuotSongQuestion.objects.all().order_by("questionID")]
     html = "Vuot Song: " + str(request) 
     return render(request, template_name="vuotsong/vuotsong.html", context=dict(questions=questions))
