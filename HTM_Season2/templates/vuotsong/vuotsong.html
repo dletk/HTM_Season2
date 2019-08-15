@@ -181,7 +181,7 @@ body{
     <div class="col-9" id="question">
         <div class="row">
             <div class="col-12">
-                <p class="questionNumber"><span id="questionNumber">0</span><span></span></p>
+                <p class="questionNumber"><span id="questionNumber">Vòng VƯỢT SÓNG!</span><span></span></p>
             </div>
         </div>
         <div class="row">
@@ -629,9 +629,43 @@ String.prototype.replaceAll = function (replaceThis, withThis) {
 Create();
 // Play();
 
+let countDownBox = $("#countDown");
+
+countDownBox.click(function() {
+    // Disable the button to avoid second click
+    countDownBox.attr("disabled", "disabled");
+    
+    var demgio = new Audio("{% static 'khoidong/khoidong_10s.mp3' %}");
+    demgio.play();
+
+    // Countdown 10s
+    var countDownInterval = null;
+    countDownInterval =  setInterval(function () {
+        var newTime = parseInt(countDownBox.text()) - 1;
+        if (newTime >= 0) {
+            countDownBox.text(newTime);
+        } else {
+            clearInterval(countDownInterval);
+            countDownBox.text("10");
+            // Enable the box again for next question
+            countDownBox.removeAttr("disabled");
+        }
+    }, 1000);
+});
+
 $("#showQuestion").click(function(event){
-  if(currentQuestionID >= questions.length){
+  currentQuestionID = parseInt(document.getElementById("id_ochu").value);
+  console.log(currentQuestionID);
+  if(isNaN(currentQuestionID) || (currentQuestionID < 0) || (currentQuestionID > questions.length)){
+    $("#questionNumber").text("Oops!");
     $("#questionContent").text("Vui lòng chọn số thứ tự hợp lệ!");
+  }
+  else{
+    currentQuestion = questions[currentQuestionID - 1];
+    questionContent = currentQuestion["questionText"]
+    $("#questionNumber").text("Ô chữ số "+currentQuestionID);
+    $("#questionContent").text(questionContent);
+    makeAjaxCall(questionContent, currentQuestionID);
   }
 });
 
