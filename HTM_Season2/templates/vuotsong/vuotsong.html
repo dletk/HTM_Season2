@@ -19,6 +19,34 @@ body{
   user-select: none;
 }*/
 
+.col, .row {
+    text-align: center;
+}
+
+.countdown_btn {
+    margin-bottom: 0.3em;
+    margin-top: 0.5em;
+}
+
+#question {
+    background-color: bisque;
+    margin-top: 2em;
+}
+#questionContent, .questionNumber {
+    font-size: 40px;
+}
+.questionNumber, #nextQuestion {
+    margin-top: 0.1em;
+}
+.questionNumber {
+    margin-bottom: 0;
+    color: red;
+}
+
+.label_chonochu{
+  font-size: 21px;
+}
+
 .crossword_container{
   /*position: absolute;*/
   /*bottom: 0; top: 0; left: 0; right: 0;*/
@@ -138,8 +166,43 @@ body{
     </div>
 
   </div> -->
-  <input type="number" name="idx_ochu" />
 </div>
+<div class="container-fluid">
+
+  <!-- Controls for ô chữ -->
+
+  <label for="id_ochu" class="label_chonochu"><b>Chọn ô chữ số:</b></label>
+  <input type="number" id="id_ochu" name="id_ochu" min="1" max="9"><br>
+  <button class="btn btn-info btn-lg crossword_btn" id="showQuestion">Hiện câu hỏi</button>
+  <button class="btn btn-danger btn-lg crossword_btn">Hiện đáp án</button>
+
+  <!-- Question area -->
+    <div class="row" id="content">
+    <div class="col-9" id="question">
+        <div class="row">
+            <div class="col-12">
+                <p class="questionNumber"><span id="questionNumber">0</span><span></span></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <p id="questionContent"></p>
+            </div>
+            <div class="col-12" id="questionFile">
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-3" id="manageAnswer">
+        <div class="row">
+            <div class="col-12">
+                <button class="countdown_btn" type="button" id="countDown" class="btn btn-danger" style="width:150px; height:150px; font-size: 70px">10</button>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
 {% csrf_token %}
 {% endblock %}
 
@@ -178,7 +241,7 @@ let questions = {{ questions|safe }};
 
 console.log(questions)
 
-var currentQuestionID = 1;
+var currentQuestionID = 10;
 var questionContent = "Bill Gates"
 
 makeAjaxCall(questionContent,
@@ -565,5 +628,12 @@ String.prototype.replaceAll = function (replaceThis, withThis) {
 
 Create();
 // Play();
+
+$("#showQuestion").click(function(event){
+  if(currentQuestionID >= questions.length){
+    $("#questionContent").text("Vui lòng chọn số thứ tự hợp lệ!");
+  }
+});
+
 </script>
 {% endblock %}
