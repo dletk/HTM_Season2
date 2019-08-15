@@ -138,6 +138,7 @@ body{
     </div>
 
   </div> -->
+  <input type="number" name="idx_ochu" />
 </div>
 {% csrf_token %}
 {% endblock %}
@@ -178,7 +179,7 @@ let questions = {{ questions|safe }};
 console.log(questions)
 
 var currentQuestionID = 1;
-var questionContent = "Phuong Vu"
+var questionContent = "Bill Gates"
 
 makeAjaxCall(questionContent,
   currentQuestionID);
@@ -562,7 +563,7 @@ String.prototype.replaceAll = function (replaceThis, withThis) {
 //   INITIAL LOAD                  //
 //---------------------------------//
 
-// Create();
+Create();
 // Play();
 </script>
 {% endblock %}
