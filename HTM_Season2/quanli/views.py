@@ -135,3 +135,21 @@ def ringBell(request):
         currentRinger = str(request.user)
         print(currentRinger, "ringed a bell!")
         return HttpResponse("Ringed!")
+
+def resetRingingState(request):
+    """
+    Function to reset the state of the bell
+    """ 
+    print("Called!!!")
+    global currentRinger
+
+    # Only POST method is allowed
+    if request.method != "POST":
+        return HttpResponseForbidden()
+
+    if request.user.is_staff:
+        # Reset by assigning currentRinger to be an empty string
+        currentRinger = ""
+        return HttpResponse("Already reset!")
+    else:
+        return HttpResponseForbidden()

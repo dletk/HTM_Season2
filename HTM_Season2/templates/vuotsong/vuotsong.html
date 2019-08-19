@@ -19,6 +19,11 @@ body{
   user-select: none;
 }*/
 
+.ui-dialog .ui-dialog-title {
+  text-align: center;
+  width: 100%;
+}
+
 .col, .row {
     text-align: center;
 }
@@ -204,8 +209,10 @@ body{
 </div>
 
 <div id="ringingDialog" title="THÔNG BÁO">
+  <center>
   <p id="ringingDialogContent">Content of the dialog</p>
-  <button>OK</button>
+  <button class="btn btn-success" id="resetStateBtn">OK</button>
+</center>
 </div>
 
 {% csrf_token %}
@@ -711,6 +718,17 @@ setInterval(function() {
         }
     })
 }, 250);
+
+$("#resetStateBtn").click(function(){
+  $.ajax({
+    url: "{% url 'resetRingingState' %}",
+    method: "POST",
+    traditional: true,
+    success: function(data){
+      ringingDialog.dialog('close');
+    }
+  });
+})
 
 </script>
 {% endblock %}
