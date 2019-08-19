@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import score, currentQuestion, NewAnswer
+from .views import score, currentQuestion, NewAnswer, ringBell
 
 urlpatterns = [
     # Handle grading requests
@@ -7,5 +7,7 @@ urlpatterns = [
     path("score/<str:username>/<int:score>", score, name="updateScore"),
     path("currentQuestion/", currentQuestion, name="currentQuestion"),
     # Handle submiting answer
-    path("answer/", NewAnswer.as_view(), name="answer")
+    path("answer/", NewAnswer.as_view(), name="answer"),
+    # Handle ringing request
+    path("ringBell/", ringBell, name="ringBell")
 ]

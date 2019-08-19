@@ -136,4 +136,5 @@ def ringBell(request):
         return JsonResponse(json.dumps(result), safe=False)
     elif request.method == "POST":
         currentRinger = str(request.user)
-        print(currentRinger)
+        print(currentRinger, "ringed a bell!")
+        return HttpResponse("Ringed!")

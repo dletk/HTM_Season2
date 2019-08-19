@@ -72,6 +72,34 @@
 <script src="{% static 'popper.min.js' %}"></script>
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script>
+
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    function makeRingingCall(){
+        $.ajax({
+            url: "{% url 'ringBell' %}",
+            method: "POST",
+            data: null,
+            traditional: true,
+            success: function(data){
+                // Do nothing
+            }
+        });
+    }
+
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });    
+
     var formGroups = $('p');
     for(let i=0; i < formGroups.length; i++) {
         var ele = formGroups[i];
@@ -102,11 +130,12 @@
 
     let ringBtn = $("#ringBell");
 
-    ringBtn.click(function(event){
+    ringBtn.click(function(){
         console.log("Đã bấm chuông!");
         ringBtn.html("Đã bấm chuông");
-        ringBtn.prop("disabled", true)
-    })
+        ringBtn.prop("disabled", true);
+        makeRingingCall();
+    });
 
     // Make AJAX calls tot update the current question
     {% if answerView %}
