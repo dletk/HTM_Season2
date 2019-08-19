@@ -9,6 +9,7 @@ from .models import DiemThiSinh
 from khoidong.models import KhoiDongQuestion
 
 from khoidong.forms import KhoiDongAnswerForm
+from vuotsong.forms import VuotSongAnswerForm
 
 import json
 
@@ -17,7 +18,10 @@ currentQuestionID = 0
 currentRound = "khoidong"
 
 # TODO: Add form classes for other rounds here
-FORM_CLASSES = {"khoidong": KhoiDongAnswerForm}
+FORM_CLASSES = {"khoidong": KhoiDongAnswerForm,
+                "vuotsong": VuotSongAnswerForm}
+
+currentRinger = ""
 
 # Create your views here.
 @login_required
@@ -111,3 +115,25 @@ def currentQuestion(request):
             return HttpResponse("Updated!")
         else:
             return HttpResponseForbidden()
+
+def ringBell(request):
+    """
+    Function to handle the request for retrieve or updating current ringer
+
+    Accepted methods:
+        GET: Return the current ringer name in JSON format
+        POST: Update the current ringer name
+    """ 
+    global currentRinger
+
+    if request.method == "GET":
+
+        # Return currentRinger
+        result = {"ringerName": currentRinger}
+        
+        # Reset currentRinger
+        currentRinger = ""
+        return JsonResponse(json.dumps(result), safe=False)
+    elif request.method == "POST":
+        currentRinger = str(request.user)
+        print(currentRinger)

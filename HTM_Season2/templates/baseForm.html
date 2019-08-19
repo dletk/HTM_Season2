@@ -25,6 +25,9 @@
         button[type="submit"] {
             margin-top: 20px;
         }
+        button[id="ringBell"]{
+            margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -50,7 +53,10 @@
                 <form method="POST" enctype="multipart/form-data">
                     {{ form.as_p }}
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary btn-outline-primary float-right">Submit</button>
+                    <button type="submit" class="btn btn-primary btn-outline-primary">Submit</button>
+                    <button id="ringBell" class="btn btn-success float-right">
+                        Bấm chuông
+                    </button>
                 </form>
             </span>
         </div>
@@ -90,6 +96,16 @@
         console.log(fileName);
         //replace the "Choose a file" label
         $('.custom-file-label').html(fileName);
+    })
+
+    // Handle the ringBell event
+
+    let ringBtn = $("#ringBell");
+
+    ringBtn.click(function(event){
+        console.log("Đã bấm chuông!");
+        ringBtn.html("Đã bấm chuông");
+        ringBtn.prop("disabled", true)
     })
 
     // Make AJAX calls tot update the current question
