@@ -127,11 +127,13 @@ def ringBell(request):
     global currentRinger
 
     if request.method == "GET":
-
         # Return currentRinger
         result = {"ringerName": currentRinger}
         return JsonResponse(json.dumps(result), safe=False)
     elif request.method == "POST":
+        # Another person ringed
+        if len(currentRinger) > 0:
+            return HttpResponseForbidden()
         currentRinger = str(request.user)
         print(currentRinger, "ringed a bell!")
         return HttpResponse("Ringed!")
@@ -140,7 +142,6 @@ def resetRingingState(request):
     """
     Function to reset the state of the bell
     """ 
-    print("Called!!!")
     global currentRinger
 
     # Only POST method is allowed

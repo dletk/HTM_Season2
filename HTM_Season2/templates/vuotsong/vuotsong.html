@@ -697,9 +697,8 @@ setInterval(function() {
             data = JSON.parse(data);
             console.log(data);
             var ringerName = data.ringerName;
-            // console.log(ringerName);
             // no one ringed the bell
-            if(data.ringerName.length == 0){ 
+            if(ringerName.length == 0){ 
               return null;
             }
             // check the ringingDialog

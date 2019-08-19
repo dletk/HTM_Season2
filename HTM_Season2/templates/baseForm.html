@@ -132,7 +132,6 @@
 
     ringBtn.click(function(){
         console.log("Đã bấm chuông!");
-        ringBtn.html("Đã bấm chuông");
         ringBtn.prop("disabled", true);
         makeRingingCall();
     });
@@ -149,6 +148,29 @@
         })
     }, 500);
     {% endif %}
+
+    // Make AJAX calls to check for ringing state
+    setInterval(function() {
+        $.ajax({
+            url: "{% url 'ringBell' %}",
+            method: "GET",
+            success: function(data) {
+                data = JSON.parse(data);
+                if(data.ringerName.length == 0){
+                    if(ringBtn.prop("disabled")){
+                        ringBtn.prop("disabled", false);
+                    }
+                }
+                else{
+                    if(ringBtn.prop("disabled")){
+                    }
+                    else{
+                        ringBtn.prop("disabled", true)
+                    }
+                }
+            }
+        })
+    }, 500);
 
 </script>
 
