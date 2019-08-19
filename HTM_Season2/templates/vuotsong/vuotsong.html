@@ -196,11 +196,16 @@ body{
     <div class="col-3" id="manageAnswer">
         <div class="row">
             <div class="col-12">
-                <button class="countdown_btn" type="button" id="countDown" class="btn btn-danger" style="width:150px; height:150px; font-size: 70px">10</button>
+                <button type="button" id="countDown" class="countdown_btn btn btn-danger" style="width:150px; height:150px; font-size: 70px">10</button>
             </div>
         </div>
     </div>
   </div>
+</div>
+
+<div id="ringingDialog" title="THÔNG BÁO">
+  <p id="ringingDialogContent">Content of the dialog</p>
+  <button>OK</button>
 </div>
 
 {% csrf_token %}
@@ -208,6 +213,15 @@ body{
 
 {% block scripts %}
 <script>
+
+// Do not open the ringingDialog if nothing happenned
+ringingDialog = $("#ringingDialog");
+
+ringingDialog.dialog({
+  modal: true,
+  autoOpen: false
+});
+
 var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
@@ -650,6 +664,7 @@ countDownBox.click(function() {
     }, 1000);
 });
 
+// Function to display question on screen
 $("#showQuestion").click(function(event){
   currentQuestionID = parseInt(document.getElementById("id_ochu").value);
   console.log(currentQuestionID);
@@ -665,6 +680,37 @@ $("#showQuestion").click(function(event){
     makeAjaxCall(questionContent, currentQuestionID);
   }
 });
+
+// Function to wait for the ringing of the bell
+setInterval(function() {
+    $.ajax({
+        url: "{% url 'ringBell' %}",
+        method: "GET",
+        success: function(data) {
+            data = JSON.parse(data);
+            console.log(data);
+            var ringerName = data.ringerName;
+            // console.log(ringerName);
+            // no one ringed the bell
+            if(data.ringerName.length == 0){ 
+              return null;
+            }
+            // check the ringingDialog
+            if(ringingDialog.dialog("isOpen")){
+              // already open
+            }
+            else{
+              // the dialog has not been opened yet
+
+              // make a sound
+              var bell_sound = new Audio("{% static 'vuotsong/bellsound.mp3' %}");
+              bell_sound.play();
+              $("#ringingDialogContent").text(ringerName + " đã nhấn chuông xin trả lời CNV!");
+              ringingDialog.dialog("open");
+            }
+        }
+    })
+}, 250);
 
 </script>
 {% endblock %}

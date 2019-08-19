@@ -130,9 +130,6 @@ def ringBell(request):
 
         # Return currentRinger
         result = {"ringerName": currentRinger}
-        
-        # Reset currentRinger
-        currentRinger = ""
         return JsonResponse(json.dumps(result), safe=False)
     elif request.method == "POST":
         currentRinger = str(request.user)
