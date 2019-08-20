@@ -39,8 +39,6 @@ def getAvailableFields(request):
     for field in TangTocQuestionField.objects.all():
         if not field.used:
             availableFields.append(field)
-
-    print(availableFields)
     
     return render(request, template_name="tangtoc/tangtocField.html", context={"fields": availableFields,
                                                                "numFields": range(len(availableFields))})
@@ -72,6 +70,10 @@ def getNewQuestion(request, field):
 
     # Get all questions of this query set
     questionsSets = TangTocQuestion.objects.filter(questionField=field)
+
+    # Mark the field as unavailable
+    field.used = True
+    field.save()
 
     questions = [toDict(question) for question in questionsSets]
 
