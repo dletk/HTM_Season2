@@ -30,7 +30,7 @@
 {% block content %}
     {% for field in fields %}
         <div class="col-4">
-            <a class="btn btn-primary">{{field.name}}</a>
+            <a class="btn btn-primary" href="{% url 'tangtocQuestions' field.code %}">{{field.name}}</a>
         </div>
     {% endfor %}
     {% csrf_token %}

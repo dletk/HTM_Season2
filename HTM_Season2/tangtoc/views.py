@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import CreateView
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
+from django.http import HttpResponseBadRequest
 
 from .forms import TangTocQuestionForm
 from .models import TangTocQuestion, TangTocQuestionField
@@ -39,10 +41,19 @@ def getAvailableFields(request):
             availableFields.append(field)
 
     print(availableFields)
+    
     return render(request, template_name="tangtoc/tangtocField.html", context={"fields": availableFields,
                                                                "numFields": range(len(availableFields))})
 
 
+def toDict(question: TangTocQuestion):
+    """
+    Helper method to convert a question to JSON format
+    """
+    return dict(questionText=question.questionText, answer=question.answer)
+
+
+@login_required
 def getNewQuestion(request, field):
     """
     Function to handle request to get a new set of questions
@@ -50,5 +61,20 @@ def getNewQuestion(request, field):
     Params:
         fields (string): The field of the set of questions
     Return:
-        questions (QuerySet): The set of questiosn for this contestant
+        questions (QuerySet): The set of question for this contestant
     """
+
+    # Check to see if this field is available
+    field = TangTocQuestionField.objects.get(code=field)
+
+    if field.used:
+        return HttpResponseBadRequest("Bad request")
+
+    # Get all questions of this query set
+    questionsSets = TangTocQuestion.objects.filter(questionField=field)
+
+    questions = [toDict(question) for question in questionsSets]
+
+    return render(request, template_name="tangtoc/tangtoc.html", context=dict(questions=questions))
+    
+    

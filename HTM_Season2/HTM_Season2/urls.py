@@ -32,7 +32,7 @@ urlpatterns = [
     # Handle the VuotSong app request
     path("vuotsong/", include("vuotsong.urls")),
     # Handle the tangtoc app request
-    path("tangtoc", include("tangtoc.urls")),
+    path("tangtoc/", include("tangtoc.urls")),
     # Using simple class-view to display the homepage (no need for creating an app)
     path("", login_required(TemplateView.as_view(template_name="home.html")), name="home"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
