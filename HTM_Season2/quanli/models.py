@@ -16,7 +16,15 @@ class DiemThiSinhManager(models.Manager):
         Return:
             A Query set of contestants and their scores
         """
-        return self.all()
+
+        thisinh_scores = []
+
+        # Create new score if the score is empty
+        for thisinh in MyUser.objects.filter(is_contestant=True):
+            # The get_or_create method return a tuple (object, created)
+            thisinh_scores.append(self.get_or_create(user=thisinh)[0])
+        
+        return thisinh_scores
 
     def updateScore(self, username, score):
         """
