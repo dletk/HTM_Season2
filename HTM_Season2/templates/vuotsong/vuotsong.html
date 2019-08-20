@@ -179,7 +179,7 @@ body{
   <label for="id_ochu" class="label_chonochu"><b>Chọn ô chữ số:</b></label>
   <input type="number" id="id_ochu" name="id_ochu" min="1" max="9"><br>
   <button class="btn btn-info btn-lg crossword_btn" id="showQuestion">Hiện câu hỏi</button>
-  <button class="btn btn-danger btn-lg crossword_btn">Hiện đáp án</button>
+  <button class="btn btn-danger btn-lg crossword_btn" id="showAnswer">Hiện đáp án</button>
 
   <!-- Question area -->
     <div class="row" id="content">
@@ -298,7 +298,16 @@ function Play(){
   var letterArr = document.getElementsByClassName('letter');
   
   for(var i = 0; i < letterArr.length; i++){
+    letterArr[i].classList.remove('visibleCell')
     letterArr[i].innerHTML = "<input class='char' type='text' maxlength='1'></input>";
+  }
+
+  // Reset visibility
+  isVisible = []
+  for(var i = 0; i < 32; i++){
+    isVisible.push([]);
+    for(var j = 0; j < 32; j++)
+      isVisible[i].push(false);
   }
   
   mode = 0;
@@ -366,11 +375,14 @@ function CleanVars(){
   wordBank = [];
   wordsActive = [];
   board = [];
+  isVisible = []
   
   for(var i = 0; i < 32; i++){
     board.push([]);
+    isVisible.push([])
     for(var j = 0; j < 32; j++){
       board[i].push(null);
+      isVisible[i].push(false);
     }
   }
 }
@@ -561,7 +573,8 @@ function BoardToHtml(blank){
   for(var i=Bounds.top-1, str=""; i<Bounds.bottom+2; i++){
     str+="<div class='row'>";
     for(var j=Bounds.left-1; j<Bounds.right+2; j++){
-      str += BoardCharToElement(board[j][i]);
+      console.log("**", j, i, isVisible[j][i]);
+      str += BoardCharToElement(board[j][i], isVisible[j][i]);
     }
     str += "</div>";
   }
@@ -569,8 +582,9 @@ function BoardToHtml(blank){
 }
 
 
-function BoardCharToElement(c){
+function BoardCharToElement(c, isVisible){
   var arr=(c)?['square','letter']:['square'];
+  if(isVisible) arr.push('visibleCell');
   return EleStr('div',[{a:'class',v:arr}],c);
 }
 
@@ -674,7 +688,6 @@ countDownBox.click(function() {
 // Function to display question on screen
 $("#showQuestion").click(function(event){
   currentQuestionID = parseInt(document.getElementById("id_ochu").value);
-  console.log(currentQuestionID);
   if(isNaN(currentQuestionID) || (currentQuestionID < 0) || (currentQuestionID > questions.length)){
     $("#questionNumber").text("Oops!");
     $("#questionContent").text("Vui lòng chọn số thứ tự hợp lệ!");
@@ -688,6 +701,47 @@ $("#showQuestion").click(function(event){
   }
 });
 
+$("#showAnswer").click(function(event){
+  currentQuestionID = parseInt(document.getElementById("id_ochu").value);
+  if(isNaN(currentQuestionID) || (currentQuestionID < 0) || (currentQuestionID > questions.length)){
+    $("#questionNumber").text("Oops!");
+    $("#questionContent").text("Vui lòng chọn số thứ tự hợp lệ!");
+  }
+  else{
+    currentQuestion = questions[currentQuestionID - 1];
+    answer = currentQuestion["answer"];
+    for(var idx = 0; idx < wordsActive.length; idx++){
+      if(wordsActive[idx].string != answer) continue;
+      for(var i = 0, len = wordsActive[idx].char.length; i < len; i++){
+        var xIndex = wordsActive[idx].x,
+            yIndex = wordsActive[idx].y;
+        
+        if (wordsActive[idx].dir === 0){
+          xIndex += i;    
+          isVisible[xIndex][yIndex] = true;
+          // console.log(">", xIndex, yIndex);
+        }
+        else{
+          yIndex += i;  
+          isVisible[xIndex][yIndex] = true;
+          // console.log("^", xIndex, yIndex);
+        }
+      }      
+      break;
+    }
+    // Re-create the crossword
+    document.getElementById("crossword").innerHTML = BoardToHtml(" ");
+    var letterArr = document.getElementsByClassName('letter');
+    for(var i = 0; i < letterArr.length; i++){
+      console.log("have!!");
+      // skip visible cells
+      if(letterArr[i].classList.contains('visibleCell')) continue;
+      // hide invisible cells
+      letterArr[i].innerHTML = "<input class='char' type='text' maxlength='1'></input>";
+    }
+  }
+});
+
 // Function to wait for the ringing of the bell
 setInterval(function() {
     $.ajax({
@@ -695,7 +749,6 @@ setInterval(function() {
         method: "GET",
         success: function(data) {
             data = JSON.parse(data);
-            console.log(data);
             var ringerName = data.ringerName;
             // no one ringed the bell
             if(ringerName.length == 0){ 
