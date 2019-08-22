@@ -62,6 +62,11 @@ def getNewQuestion(request, field):
         questions (QuerySet): The set of question for this contestant
     """
 
+    # Check authentication
+    if not request.user.is_staff:
+        return render(request, template_name="home.html",
+                    context={"message": "Xin lỗi, bạn không được phép truy cập tính năng này"})
+
     # Check to see if this field is available
     field = TangTocQuestionField.objects.get(code=field)
 

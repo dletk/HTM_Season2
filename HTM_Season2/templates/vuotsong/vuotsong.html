@@ -248,7 +248,7 @@ function makeAjaxCall(questionContent, currentQuestionID) {
     $.ajax({
         url: "{% url 'currentQuestion'%}",
         method: "POST",
-        data: {"question":questionContent, "questionID":currentQuestionID},
+        data: {"question":questionContent, "questionID":currentQuestionID, "round": "vuotsong"},
         dataType: "json",
         traditional: true,
         success: function (data) {

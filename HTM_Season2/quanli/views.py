@@ -7,6 +7,8 @@ from django.urls import reverse_lazy
 from .models import DiemThiSinh
 
 from khoidong.models import KhoiDongQuestion
+from vuotsong.models import VuotSongQuestion
+from tangtoc.models import TangTocQuestion
 
 from khoidong.forms import KhoiDongAnswerForm
 from vuotsong.forms import VuotSongAnswerForm
@@ -18,8 +20,10 @@ currentQuestionID = 0
 currentRound = "khoidong"
 
 # TODO: Add form classes for other rounds here
-FORM_CLASSES = {"khoidong": KhoiDongAnswerForm,
-                "vuotsong": VuotSongAnswerForm}
+FORM_CLASSES = {
+                "khoidong": KhoiDongAnswerForm,
+                "vuotsong": VuotSongAnswerForm,
+                }
 
 currentRinger = ""
 
@@ -47,7 +51,6 @@ def score(request, username=None, score=None):
         else:
             # This request is for updating
             if request.user.is_staff:
-                # TODO: Update the information in database and return OK
                 diemThiSinhManager.updateScore(username, score)
                 return HttpResponse("Success!")
             else:
@@ -59,7 +62,7 @@ class NewAnswer(generic.CreateView):
     """
     Class-based view to submit a new answer to the database
     """
-    global currentQuestionID, currentRound
+    global currentQuestionID, currentRound, FORM_CLASSES
 
     form_class = FORM_CLASSES[currentRound]
     success_url = reverse_lazy("answer")
@@ -69,6 +72,9 @@ class NewAnswer(generic.CreateView):
     def post(self, request):
         # If currently no question is being presented, prevent thi sinh to submit answer
         if currentQuestionID > 0:
+            print("==========> Current round: {}".format(currentRound))
+            self.form_class = FORM_CLASSES[currentRound]
+
             user = request.user
             # Get the form data submitted by user
             formAnswer = self.form_class(request.POST)
@@ -76,10 +82,15 @@ class NewAnswer(generic.CreateView):
             answer = formAnswer.save(commit=False)
             answer.thisinh = user
 
+            print("===== Current form {}, curent round {}".format(self.form_class, currentRound))
+
             # Find the correct round
+            # Only these 2 rounds require submission to server
             if currentRound == "khoidong":
                 answer.question = KhoiDongQuestion.objects.get(questionID=currentQuestionID)
-            # TODO: Add other condition for other round
+            elif currentRound == "vuotsong":
+                answer.question = VuotSongQuestion.objects.get(questionID=currentQuestionID)
+            
         
             # Save the answer
             answer.save()
@@ -112,6 +123,7 @@ def currentQuestion(request):
             # Update the data for server to know about current question info
             currentQuestionContent = dataPost.get("question")
             currentQuestionID = int(dataPost.get("questionID"))
+            currentRound = dataPost.get("round")
             return HttpResponse("Updated!")
         else:
             return HttpResponseForbidden()

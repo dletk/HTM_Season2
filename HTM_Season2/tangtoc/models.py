@@ -19,6 +19,9 @@ class TangTocQuestionField(models.Model):
     # Keep track whether this field is used
     used = models.BooleanField(default=False, verbose_name="Đã sử dụng")
 
+    def __str__(self):
+        return self.name
+
 
 class TangTocQuestion(models.Model):
     """
@@ -39,7 +42,7 @@ class TangTocQuestion(models.Model):
         max_length=255, blank=False, verbose_name="Đáp án")
 
     def __str__(self):
-        return self.questionField + ": " + self.questionText
+        return str(self.questionField) + ": " + self.questionText
 
 
 # This round does not need to have Answer model because the contestant will answer directly to MC

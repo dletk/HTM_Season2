@@ -31,7 +31,7 @@
     <div class="col-9" id="question">
         <div class="row">
             <div class="col-12">
-                <p class="questionNumber"><span id="questionNumber">0</span><span>/12</span></p>
+                <p class="questionNumber"><span id="questionNumber">0</span><span>/15</span></p>
                 <button class="btn btn-outline-primary" id="nextQuestion">Câu hỏi tiếp theo</button>
             </div>
         </div>
@@ -76,7 +76,7 @@
         $.ajax({
             url: "{% url 'currentQuestion'%}",
             method: "POST",
-            data: {"question":questionContent, "questionID":currentQuestionID},
+            data: {"question":questionContent, "questionID":currentQuestionID, "round": "tangtoc"},
             dataType: "json",
             traditional: true,
             success: function (data) {

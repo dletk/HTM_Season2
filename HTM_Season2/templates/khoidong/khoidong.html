@@ -76,7 +76,7 @@
         $.ajax({
             url: "{% url 'currentQuestion'%}",
             method: "POST",
-            data: {"question":questionContent, "questionID":currentQuestionID},
+            data: {"question":questionContent, "questionID":currentQuestionID, "round": "khoidong"},
             dataType: "json",
             traditional: true,
             success: function (data) {
