@@ -54,9 +54,11 @@
                     {{ form.as_p }}
                     {% csrf_token %}
                     <button type="submit" class="btn btn-primary btn-outline-primary">Submit</button>
+                    {% if answerView %}
                     <button id="ringBell" class="btn btn-success float-right">
                         Bấm chuông
                     </button>
+                    {% endif %}
                 </form>
             </span>
         </div>
@@ -126,16 +128,6 @@
         $('.custom-file-label').html(fileName);
     })
 
-    // Handle the ringBell event
-
-    let ringBtn = $("#ringBell");
-
-    ringBtn.click(function(){
-        console.log("Đã bấm chuông!");
-        ringBtn.prop("disabled", true);
-        makeRingingCall();
-    });
-
     // Make AJAX calls tot update the current question
     {% if answerView %}
     setInterval(function() {
@@ -147,7 +139,16 @@
             }
         })
     }, 500);
-    {% endif %}
+
+    // Handle the ringBell event
+
+    let ringBtn = $("#ringBell");
+
+    ringBtn.click(function(){
+        console.log("Đã bấm chuông!");
+        ringBtn.prop("disabled", true);
+        makeRingingCall();
+    });
 
     // Make AJAX calls to check for ringing state
     setInterval(function() {
@@ -171,6 +172,7 @@
             }
         })
     }, 500);
+    {% endif %}
 
 </script>
 
