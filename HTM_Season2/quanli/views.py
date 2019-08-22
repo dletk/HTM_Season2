@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http.response import HttpResponse, JsonResponse, HttpResponseForbidden
+from django.http.response import HttpResponse, JsonResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.views import generic
 from django.urls import reverse_lazy
@@ -70,6 +70,10 @@ class NewAnswer(generic.CreateView):
 
     # Handle the post method to inlcude question number and
     def post(self, request):
+        # TODO: Ignore the request if it is not vuotsong or khoidong
+        if currentRound not in ["vuotsong", "khoidong"]:
+            return HttpResponseRedirect(reverse_lazy("answer"))
+
         # If currently no question is being presented, prevent thi sinh to submit answer
         if currentQuestionID > 0:
             print("==========> Current round: {}".format(currentRound))
