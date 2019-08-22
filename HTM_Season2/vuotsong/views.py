@@ -28,6 +28,19 @@ class NewQuestion(generic.CreateView):
             return render(request, template_name="home.html",
                           context={"message": "Xin lỗi, bạn không được phép truy cập tính năng này"})
 
+def getFileType(fileName):
+    """
+    Helper fucntion to get the file type of the given file name
+    """
+    # +1 for the index to ignore the dot "."
+    fileExtension = fileName[fileName.rindex(".")+1:].lower()
+    if fileExtension in ["mp4", "mov", "avi"]:
+        return "video"
+    elif fileExtension in ["jpg", "png", "jpeg", "gif"]:
+        return "image"
+    else:
+        return "sound"
+
 def toDict(question: VuotSongQuestion):
     """
     Helper method to convert a question to JSON format
