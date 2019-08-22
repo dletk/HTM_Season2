@@ -695,6 +695,28 @@ $("#showQuestion").click(function(event){
   else{
     currentQuestion = questions[currentQuestionID - 1];
     questionContent = currentQuestion["questionText"]
+    let questionFileType = currentQuestion["fileType"];
+    let questionFile = currentQuestion["file"];
+
+    console.log(`====> Question file ${questionFile}`);
+
+    if (questionFile) {
+        let fileDisplay = $("#questionFile");
+
+        fileDisplay.empty();
+
+        console.log(`=====> ${questionFileType}`);
+        
+        if (questionFileType == "image") {
+            fileDisplay.append("<img width='640' height='480' src=" + questionFile + ">");
+        } else if (questionFileType == "video") {
+            fileDisplay.append("<video width='640' height='480' controls><source src=" + questionFile + " type='video/mp4'></video>");
+        } else if (questionFileType == "sound") {
+            let htmlString = "<audio controls><source src="+ questionFile + " type='audio/mpeg'>Your browser does not support the audio element.</audio>"
+            fileDisplay.append(htmlString);
+        }
+    }
+
     $("#questionNumber").text("Ô chữ số "+currentQuestionID);
     $("#questionContent").text(questionContent);
     makeAjaxCall(questionContent, currentQuestionID);
