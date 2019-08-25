@@ -32,7 +32,6 @@
         <div class="row">
             <div class="col-12">
                 <p class="questionNumber"><span id="questionNumber">0</span><span>/15</span></p>
-                <button class="btn btn-outline-info" id="showAnswer">Hiện đáp án</button>
                 <button class="btn btn-outline-primary" id="nextQuestion">Câu hỏi tiếp theo</button>
             </div>
         </div>
@@ -51,7 +50,7 @@
     <div class="col-3" id="manageAnswer">
         <div class="row">
             <div class="col-12">
-                <button type="button" id="countDown" class="btn btn-danger" style="width:150px; height:150px; font-size: 70px">10</button>
+                <button type="button" id="countDown" class="btn btn-danger" style="width:150px; height:150px; font-size: 70px">60</button>
             </div>
         </div>
     </div>
@@ -95,7 +94,7 @@
         // Disable the button to avoid second click
         countDownBox.attr("disabled", "disabled");
         
-        var demgio = new Audio("{% static 'khoidong/khoidong_10s.mp3' %}");
+        var demgio = new Audio("{% static 'tangtoc/ButToc_60s.mp3' %}");
         demgio.play();
 
         // Countdown 10s
@@ -120,58 +119,67 @@
 
     var currentQuestionID = 0;
 
+    function showNextQuestion(){
+        let currentQuestion = questions[currentQuestionID]
+        
+        // Get all the information of this question
+        let questionContent = currentQuestion["questionText"];
+        let questionFileType = currentQuestion["fileType"];
+        let questionFile = currentQuestion["file"];
+
+        console.log(`====> Question file ${questionFile}`);
+
+        if (questionFile) {
+            let fileDisplay = $("#questionFile");
+
+            fileDisplay.empty();
+
+            console.log(`=====> ${questionFileType}`);
+            
+            if (questionFileType == "image") {
+                fileDisplay.append("<img width='480' height='360' src=" + questionFile + ">");
+            } else if (questionFileType == "video") {
+                fileDisplay.append("<video width='480' height='360' controls><source src=" + questionFile + " type='video/mp4'></video>");
+            } else if (questionFileType == "sound") {
+                let htmlString = "<audio controls><source src="+ questionFile + " type='audio/mpeg'>Your browser does not support the audio element.</audio>"
+                fileDisplay.append(htmlString);
+            }
+        }
+    
+        $("#questionContent").text(questionContent);
+        // currentQuestionID begin with 0 for array index, but should be 1 in the database
+        currentQuestionID++;
+        $("#questionNumber").text(currentQuestionID);
+        $("#showDapAnThiSinh").prop("disabled", false);
+        $("#dapAnThiSinh").html();
+        
+        
+        // Update the current question to the server
+        makeAjaxCall(questionContent, currentQuestionID);        
+    }
+
+    function showAnswer(){
+        let currentQuestion = questions[currentQuestionID - 1]   
+        let questionAnswer = currentQuestion["answer"];
+        $("#questionAnswer").text("Đáp án: " + questionAnswer);
+    }
+
     $("#nextQuestion").click(function(event) {
         $("#questionAnswer").text("");
         if (currentQuestionID >= questions.length) {
+            showAnswer();
             $("#questionContent").text("Kết thúc phần thi");
         } else {
-            let currentQuestion = questions[currentQuestionID]
-            
-            // Get all the information of this question
-            let questionContent = currentQuestion["questionText"];
-            let questionFileType = currentQuestion["fileType"];
-            let questionFile = currentQuestion["file"];
-
-            console.log(`====> Question file ${questionFile}`);
-
-            if (questionFile) {
-                let fileDisplay = $("#questionFile");
-
-                fileDisplay.empty();
-
-                console.log(`=====> ${questionFileType}`);
-                
-                if (questionFileType == "image") {
-                    fileDisplay.append("<img width='640' height='480' src=" + questionFile + ">");
-                } else if (questionFileType == "video") {
-                    fileDisplay.append("<video width='640' height='480' controls><source src=" + questionFile + " type='video/mp4'></video>");
-                } else if (questionFileType == "sound") {
-                    let htmlString = "<audio controls><source src="+ questionFile + " type='audio/mpeg'>Your browser does not support the audio element.</audio>"
-                    fileDisplay.append(htmlString);
-                }
+            if(currentQuestionID > 0){
+                showAnswer();
+                setTimeout(function(){ 
+                    $("#questionAnswer").text("");
+                    showNextQuestion(); 
+                }, 300);
+            }    
+            else{
+                showNextQuestion();
             }
-        
-            $("#questionContent").text(questionContent);
-            // currentQuestionID begin with 0 for array index, but should be 1 in the database
-            currentQuestionID++;
-            $("#questionNumber").text(currentQuestionID);
-            $("#showDapAnThiSinh").prop("disabled", false);
-            $("#dapAnThiSinh").html();
-            
-            
-            // Update the current question to the server
-            makeAjaxCall(questionContent, currentQuestionID);
-            
-        }
-    });
-
-    $("#showAnswer").click(function(event){
-        if (currentQuestionID <= 0 || currentQuestionID > questions.length){
-            $("#questionAnswer").text("...");
-        } else {
-            let currentQuestion = questions[currentQuestionID - 1]   
-            let questionAnswer = currentQuestion["answer"];
-            $("#questionAnswer").text("Đáp án: " + questionAnswer);
         }
     });
 </script>
