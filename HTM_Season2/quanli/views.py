@@ -79,6 +79,7 @@ class NewAnswer(generic.CreateView):
         # If currently no question is being presented, prevent thi sinh to submit answer
         # Also prevent thi sinh to submit answer if time out
         if currentQuestionID > 0 and acceptingAnswer:
+            print("========> {}".format(acceptingAnswer))
             self.form_class = FORM_CLASSES[currentRound]
 
             user = request.user
@@ -128,9 +129,6 @@ def currentQuestion(request):
             currentQuestionContent = dataPost.get("question")
             currentQuestionID = int(dataPost.get("questionID"))
             currentRound = dataPost.get("round")
-
-            # Enable accepting answer for this question
-            acceptingAnswer = True
 
             return HttpResponse("Updated!")
         else:
@@ -210,7 +208,7 @@ def getDapAnThiSinh(request):
         answers = KhoiDongAnswer.objects.filter(question=question)
 
     # Get all the id of thisinh that submit the answer
-    thisinh_id = [thisinh["thisinh"] for thisinh in answers.values("thisinh")]
+    thisinh_id = set([thisinh["thisinh"] for thisinh in answers.values("thisinh")])
     
     # Go through the answers and only retrieve the final answer of each
     final_answers = []
