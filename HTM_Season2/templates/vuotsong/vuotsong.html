@@ -331,6 +331,8 @@ function Play(){
   
   mode = 0;
   ToggleInputBoxes(false);
+  document.getElementById("btnCreate").style.visibility = "hidden";
+  document.getElementById("btnPlay").style.visibility = "hidden";
 }
 
 
@@ -598,7 +600,7 @@ function BoardToHtml(blank){
   for(var i=Bounds.top-1, str=""; i<Bounds.bottom+2; i++){
     str+="<div class='row'>";
     for(var j=Bounds.left-1; j<Bounds.right+2; j++){
-      console.log("**", j, i, isVisible[j][i]);
+      // console.log("**", j, i, isVisible[j][i]);
       str += BoardCharToElement(board[j][i], isVisible[j][i], isPos[j][i]);
     }
     str += "</div>";
@@ -764,7 +766,10 @@ $("#showAnswer").click(function(event){
     currentQuestion = questions[currentQuestionID - 1];
     answer = currentQuestion["answer"];
     for(var idx = 0; idx < wordsActive.length; idx++){
-      if(wordsActive[idx].string != answer) continue;
+      let testAnswerLen = wordsActive[idx].string.length;
+      let testAnswer = wordsActive[idx].string.substring(2, testAnswerLen-1);
+      // console.log("@@@" + testAnswer + "---" + answer);
+      if(testAnswer != answer) continue;
       for(var i = 0, len = wordsActive[idx].char.length; i < len; i++){
         var xIndex = wordsActive[idx].x,
             yIndex = wordsActive[idx].y;
