@@ -6,9 +6,10 @@ from django.urls import reverse_lazy
 
 from .models import DiemThiSinh
 
-from khoidong.models import KhoiDongQuestion
-from vuotsong.models import VuotSongQuestion
+from khoidong.models import KhoiDongQuestion, KhoiDongAnswer
+from vuotsong.models import VuotSongQuestion, VuotSongAnswer
 from tangtoc.models import TangTocQuestion
+from userprofile.models import MyUser
 
 from khoidong.forms import KhoiDongAnswerForm
 from vuotsong.forms import VuotSongAnswerForm
@@ -186,3 +187,38 @@ def beginOrStopAcceptingAnswer(request):
         acceptingAnswer = not acceptingAnswer
     
     return HttpResponse("Success")
+        
+
+@login_required
+def getDapAnThiSinh(request):
+    """
+    The function to handle getting all the latest answers from thi sinh
+    """
+
+    global currentQuestionID, currentRound
+
+    # Get the current question
+    if currentRound == "khoidong":
+        question = KhoiDongQuestion.objects.get(questionID=currentQuestionID)
+    else:
+        question = VuotSongQuestion.objects.get(questionID=currentQuestionID)
+
+    # Get all answers for this question
+    if currentRound == "khoidong":
+        answers = KhoiDongAnswer.objects.filter(question=question)
+    else:
+        answers = KhoiDongAnswer.objects.filter(question=question)
+
+    # Get all the id of thisinh that submit the answer
+    thisinh_id = [thisinh["thisinh"] for thisinh in answers.values("thisinh")]
+    
+    # Go through the answers and only retrieve the final answer of each
+    final_answers = []
+    for id in thisinh_id:
+        last_answer = answers.filter(thisinh=id).last()
+        final_answers.append(dict(
+            thisinh=str(MyUser.objects.get(pk=id)),
+            answer=last_answer.answer,
+        ))
+
+    return JsonResponse(json.dumps(final_answers), safe=False)

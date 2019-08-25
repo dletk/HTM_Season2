@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import score, currentQuestion, NewAnswer, ringBell, resetRingingState, beginOrStopAcceptingAnswer
+from .views import score, currentQuestion, NewAnswer, ringBell, resetRingingState, beginOrStopAcceptingAnswer, getDapAnThiSinh
 
 urlpatterns = [
     # Handle grading requests
@@ -13,4 +13,6 @@ urlpatterns = [
     path("resetRingingState/", resetRingingState, name="resetRingingState"),
     # Handle accepting new answer or stop accepting answer
     path("handleAcceptingAnswer/", beginOrStopAcceptingAnswer, name="handleAcceptingAnswer"),
+    # Handle display dapan
+    path("getDapAnThiSinh/", getDapAnThiSinh, name="getDapAnThiSinh")
 ]
