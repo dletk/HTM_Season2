@@ -13,3 +13,8 @@ python manage.py createsuperuser
 ```
 
 Make sure you can access the admin page at `localhost:8000/admin`
+
+Run in LAN:
+```
+python manage.py runserver 0.0.0.0:8000
+```
