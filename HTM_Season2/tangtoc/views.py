@@ -16,6 +16,11 @@ class NewQuestion(CreateView):
     Usig a class-based view will provides us a defautl error-handling
     """
 
+    # Check authentication
+    if not request.user.is_staff:
+        return render(request, template_name="home.html",
+                    context={"message": "Xin lỗi, bạn không được phép truy cập tính năng này"})
+
     form_class = TangTocQuestionForm
     success_url = reverse_lazy("newTangTocQuestion")
     template_name = "baseForm.html"
@@ -34,6 +39,12 @@ def getAvailableFields(request):
     """
     View to handle the request for get the current remaining available fields
     """
+
+    # Check authentication
+    if not request.user.is_staff:
+        return render(request, template_name="home.html",
+                    context={"message": "Xin lỗi, bạn không được phép truy cập tính năng này"})
+
     availableFields = []
 
     for field in TangTocQuestionField.objects.all():

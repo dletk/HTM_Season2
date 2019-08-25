@@ -16,6 +16,11 @@ class NewQuestion(generic.CreateView):
     Usig a class-based view will provides us a defautl error-handling
     """
 
+    # Check authentication
+    if not request.user.is_staff:
+        return render(request, template_name="home.html",
+                    context={"message": "Xin lỗi, bạn không được phép truy cập tính năng này"})
+
     form_class = KhoiDongQuestionForm
     success_url = reverse_lazy("newKhoiDongQuestion")
     template_name = "baseForm.html"
