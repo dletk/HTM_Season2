@@ -120,6 +120,7 @@
     var currentQuestionID = 0;
 
     $("#nextQuestion").click(function(event) {
+        $("#questionAnswer").text("");
         if (currentQuestionID >= questions.length) {
             $("#questionContent").text("Kết thúc phần thi");
         } else {
@@ -162,10 +163,10 @@
     });
 
     $("#showAnswer").click(function(event){
-        if (currentQuestionID >= questions.length) {
-            $("#questionContent").text("...");
+        if (currentQuestionID <= 0 || currentQuestionID > questions.length){
+            $("#questionAnswer").text("...");
         } else {
-            let currentQuestion = questions[currentQuestionID]   
+            let currentQuestion = questions[currentQuestionID - 1]   
             let questionAnswer = currentQuestion["answer"];
             $("#questionAnswer").text("Đáp án: " + questionAnswer);
         }
