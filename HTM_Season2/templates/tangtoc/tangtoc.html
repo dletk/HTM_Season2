@@ -137,9 +137,9 @@
             console.log(`=====> ${questionFileType}`);
             
             if (questionFileType == "image") {
-                fileDisplay.append("<img width='480' height='360' src=" + questionFile + ">");
+                fileDisplay.append("<img width='576' height='432' src=" + questionFile + ">");
             } else if (questionFileType == "video") {
-                fileDisplay.append("<video width='480' height='360' controls><source src=" + questionFile + " type='video/mp4'></video>");
+                fileDisplay.append("<video width='576' height='432' controls><source src=" + questionFile + " type='video/mp4'></video>");
             } else if (questionFileType == "sound") {
                 let htmlString = "<audio controls><source src="+ questionFile + " type='audio/mpeg'>Your browser does not support the audio element.</audio>"
                 fileDisplay.append(htmlString);
