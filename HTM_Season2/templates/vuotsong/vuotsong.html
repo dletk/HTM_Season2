@@ -323,9 +323,9 @@ function Play(){
 
   // Reset visibility
   isVisible = []
-  for(var i = 0; i < 36; i++){
+  for(var i = 0; i < 40; i++){
     isVisible.push([]);
-    for(var j = 0; j < 36; j++)
+    for(var j = 0; j < 40; j++)
       isVisible[i].push(false);
   }
   
@@ -397,11 +397,11 @@ function CleanVars(){
   isVisible = []
   isPos = []
   
-  for(var i = 0; i < 32; i++){
+  for(var i = 0; i < 40; i++){
     board.push([]);
     isVisible.push([])
     isPos.push([])
-    for(var j = 0; j < 32; j++){
+    for(var j = 0; j < 40; j++){
       board[i].push(null);
       isVisible[i].push(false);
       isPos[i].push(false);
