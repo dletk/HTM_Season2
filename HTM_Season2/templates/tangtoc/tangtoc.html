@@ -106,7 +106,8 @@
                 countDownBox.text(newTime);
             } else {
                 clearInterval(countDownInterval);
-                countDownBox.text("10");
+                // 60s per question-set
+                countDownBox.text("60");
                 // Enable the box again for next question
                 countDownBox.removeAttr("disabled");
             }
@@ -154,6 +155,8 @@
             // currentQuestionID begin with 0 for array index, but should be 1 in the database
             currentQuestionID++;
             $("#questionNumber").text(currentQuestionID);
+            $("#showDapAnThiSinh").prop("disabled", false);
+            $("#dapAnThiSinh").html();
             
             
             // Update the current question to the server
