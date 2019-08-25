@@ -19,6 +19,8 @@ currentQuestionContent = ""
 currentQuestionID = 0
 currentRound = "khoidong"
 
+acceptingAnswer = False
+
 # TODO: Add form classes for other rounds here
 FORM_CLASSES = {
                 "khoidong": KhoiDongAnswerForm,
@@ -62,7 +64,7 @@ class NewAnswer(generic.CreateView):
     """
     Class-based view to submit a new answer to the database
     """
-    global currentQuestionID, currentRound, FORM_CLASSES
+    global currentQuestionID, currentRound, FORM_CLASSES, acceptingAnswer
 
     form_class = FORM_CLASSES[currentRound]
     success_url = reverse_lazy("answer")
@@ -70,13 +72,12 @@ class NewAnswer(generic.CreateView):
 
     # Handle the post method to inlcude question number and
     def post(self, request):
-        # TODO: Ignore the request if it is not vuotsong or khoidong
         if currentRound not in ["vuotsong", "khoidong"]:
             return HttpResponseRedirect(reverse_lazy("answer"))
 
         # If currently no question is being presented, prevent thi sinh to submit answer
-        if currentQuestionID > 0:
-            print("==========> Current round: {}".format(currentRound))
+        # Also prevent thi sinh to submit answer if time out
+        if currentQuestionID > 0 and acceptingAnswer:
             self.form_class = FORM_CLASSES[currentRound]
 
             user = request.user
@@ -85,8 +86,6 @@ class NewAnswer(generic.CreateView):
             # Create an answer instance but not yet saved
             answer = formAnswer.save(commit=False)
             answer.thisinh = user
-
-            print("===== Current form {}, curent round {}".format(self.form_class, currentRound))
 
             # Find the correct round
             # Only these 2 rounds require submission to server
@@ -116,7 +115,7 @@ def currentQuestion(request):
         GET: Return the current question content in JSON format
         POST: Update the current question content
     """ 
-    global currentQuestionContent, currentQuestionID, currentRound
+    global currentQuestionContent, currentQuestionID, currentRound, acceptingAnswer
 
     if request.method == "GET":
         return JsonResponse(json.dumps(dict(question=currentQuestionContent)), safe=False)
@@ -128,6 +127,10 @@ def currentQuestion(request):
             currentQuestionContent = dataPost.get("question")
             currentQuestionID = int(dataPost.get("questionID"))
             currentRound = dataPost.get("round")
+
+            # Enable accepting answer for this question
+            acceptingAnswer = True
+
             return HttpResponse("Updated!")
         else:
             return HttpResponseForbidden()
@@ -170,3 +173,16 @@ def resetRingingState(request):
         return HttpResponse("Already reset!")
     else:
         return HttpResponseForbidden()
+
+
+@login_required
+def beginOrStopAcceptingAnswer(request):
+    """
+    The fucntion to handle request of begin accepting answer from thi sinh
+    """
+    global acceptingAnswer
+
+    if request.user.is_staff:
+        acceptingAnswer = not acceptingAnswer
+    
+    return HttpResponse("Success")
