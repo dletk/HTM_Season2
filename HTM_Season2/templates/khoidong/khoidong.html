@@ -155,7 +155,8 @@
                             var newAnswer = document.createElement("div");
                             newAnswer.setAttribute("class", "answer col");
                             newAnswer.innerHTML = "<span style='font-weight: bold'> " + answer.thisinh + "</span>" + ": " + answer.answer
-                            $("#dapAnThiSinh").append(newAnswer);
+                            // $("#dapAnThiSinh").append(newAnswer);
+                            $("#dapAnThiSinh").html(newAnswer);
                         }
 
                     }
@@ -210,6 +211,8 @@
             // currentQuestionID begin with 0 for array index, but should be 1 in the database
             currentQuestionID++;
             $("#questionNumber").text(currentQuestionID);
+            $("#showDapAnThiSinh").prop("disabled", false);
+            $("#dapAnThiSinh").hide();
             
             
             // Update the current question to the server
