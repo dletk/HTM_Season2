@@ -108,6 +108,25 @@ body{
   -ms-user-select: none;
   user-select: none;
 }
+.posCell{
+  background-color: #ff0000;
+  color: #ffffff;
+  margin: 0 1px 1px 0;
+  border-radius: 50%;
+  display: inline-block;
+  font: 24px Sans-Serif;
+  width: 1.30em;
+  height: 1.30em;
+  line-height: 1.25em;
+  vertical-align: middle;
+  
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 .letter{
   background-color: rgb(255,255,255);
    
@@ -376,13 +395,16 @@ function CleanVars(){
   wordsActive = [];
   board = [];
   isVisible = []
+  isPos = []
   
   for(var i = 0; i < 32; i++){
     board.push([]);
     isVisible.push([])
+    isPos.push([])
     for(var j = 0; j < 32; j++){
       board[i].push(null);
       isVisible[i].push(false);
+      isPos[i].push(false);
     }
   }
 }
@@ -402,7 +424,8 @@ function PrepareBoard(){
   wordBank=[];
   
   for(var i = 0, len = wordArr.length; i < len; i++){
-    wordBank.push(new WordObj(wordArr[i]));
+    let actualPos = i+1;
+    wordBank.push(new WordObj(' '+actualPos.toString()+wordArr[i]+' '));
   }
   
   for(i = 0; i < wordBank.length; i++){
@@ -439,10 +462,12 @@ function AddWordToBoard(){
       curWord.effectiveMatches = 0;
       curWord.successfulMatches = [];
       for(var j = 0, lenJ = curWord.char.length; j < lenJ; j++){
+        if(j == 1) continue; // skip pos
         curChar = curWord.char[j];
         for (var k = 0, lenK = wordsActive.length; k < lenK; k++){
           testWord = wordsActive[k];
           for (var l = 0, lenL = testWord.char.length; l < lenL; l++){
+            if(l == 1) continue; // skip pos
             testChar = testWord.char[l];            
             if (curChar === testChar){
               curWord.effectiveMatches++;
@@ -555,12 +580,12 @@ function AddWordToBoard(){
     
     if (matchData.dir === 0){
       xIndex += i;    
-      board[xIndex][yIndex] = wordsActive[pushIndex].char[i];
     }
     else{
       yIndex += i;  
-      board[xIndex][yIndex] = wordsActive[pushIndex].char[i];
     }
+    board[xIndex][yIndex] = wordsActive[pushIndex].char[i];
+    isPos[xIndex][yIndex] = (i == 1);
     
     Bounds.Update(xIndex,yIndex);
   }
@@ -574,7 +599,7 @@ function BoardToHtml(blank){
     str+="<div class='row'>";
     for(var j=Bounds.left-1; j<Bounds.right+2; j++){
       console.log("**", j, i, isVisible[j][i]);
-      str += BoardCharToElement(board[j][i], isVisible[j][i]);
+      str += BoardCharToElement(board[j][i], isVisible[j][i], isPos[j][i]);
     }
     str += "</div>";
   }
@@ -582,8 +607,14 @@ function BoardToHtml(blank){
 }
 
 
-function BoardCharToElement(c, isVisible){
-  var arr=(c)?['square','letter']:['square'];
+function BoardCharToElement(c, isVisible, isPos){
+  var arr=['square'];
+  if(isPos){
+    arr=['posCell'];
+  }
+  else{
+    if(c && c != ' ') arr.push('letter');
+  }
   if(isVisible) arr.push('visibleCell');
   return EleStr('div',[{a:'class',v:arr}],c);
 }
