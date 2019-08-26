@@ -202,6 +202,7 @@ body{
   <input type="number" id="id_ochu" name="id_ochu" min="1" max="9"><br>
   <button class="btn btn-info btn-lg crossword_btn" id="showQuestion">Hiện câu hỏi</button>
   <button class="btn btn-danger btn-lg crossword_btn" id="showAnswer">Hiện đáp án</button>
+  <button class="btn btn-success btn-lg crossword_btn" id="wrongAnswer">Sai</button>
 
   <!-- Question area -->
     <div class="row" id="content">
@@ -318,25 +319,9 @@ var Bounds = {
 //---------------------------------//
 
 function Play(){
-  var letterArr = document.getElementsByClassName('letter');
-  
-  for(var i = 0; i < letterArr.length; i++){
-    letterArr[i].classList.remove('visibleCell')
-    letterArr[i].innerHTML = "<input class='char' type='text' maxlength='1'></input>";
-  }
-
-  // Reset visibility
-  isVisible = []
-  for(var i = 0; i < 40; i++){
-    isVisible.push([]);
-    for(var j = 0; j < 40; j++)
-      isVisible[i].push(false);
-  }
-  
-  mode = 0;
-  ToggleInputBoxes(false);
-  document.getElementById("btnCreate").style.visibility = "hidden";
-  document.getElementById("btnPlay").style.visibility = "hidden";
+  $(".letter span").hide();
+  $("#btnCreate").hide();
+  $("#btnPlay").hide();
 }
 
 
@@ -402,17 +387,17 @@ function CleanVars(){
   wordBank = [];
   wordsActive = [];
   board = [];
-  isVisible = []
-  isPos = []
+  isPos = [];
+  classesOfBoard = []
   
   for(var i = 0; i < 40; i++){
     board.push([]);
-    isVisible.push([])
-    isPos.push([])
+    isPos.push([]);
+    classesOfBoard.push([]);
     for(var j = 0; j < 40; j++){
       board[i].push(null);
-      isVisible[i].push(false);
       isPos[i].push(false);
+      classesOfBoard[i].push([]);
     }
   }
 }
@@ -447,6 +432,12 @@ function PrepareBoard(){
   }  
 }
 
+function findWordIdx(givenWord){
+  givenWord = givenWord.substring(2, givenWord.length-1);
+  for(var i = 0, len = wordArr.length; i < len; i++){
+    if(givenWord == wordArr[i]) return i+1;
+  }
+}
 
 // TODO: Clean this guy up
 function AddWordToBoard(){
@@ -582,6 +573,8 @@ function AddWordToBoard(){
   wordsActive[pushIndex].y = matchData.y;
   wordsActive[pushIndex].dir = matchData.dir;
   
+  let actualIndex = findWordIdx(wordsActive[pushIndex].string);
+  console.log(wordsActive[pushIndex].string, " ~~~ ", actualIndex);
   for(i = 0, len = wordsActive[pushIndex].char.length; i < len; i++){
     var xIndex = matchData.x,
         yIndex = matchData.y;
@@ -594,6 +587,8 @@ function AddWordToBoard(){
     }
     board[xIndex][yIndex] = wordsActive[pushIndex].char[i];
     isPos[xIndex][yIndex] = (i == 1);
+    classesOfBoard[xIndex][yIndex].push(actualIndex);
+    console.log(xIndex, yIndex, classesOfBoard[xIndex][yIndex]);
     
     Bounds.Update(xIndex,yIndex);
   }
@@ -606,8 +601,7 @@ function BoardToHtml(blank){
   for(var i=Bounds.top-1, str=""; i<Bounds.bottom+2; i++){
     str+="<div class='row'>";
     for(var j=Bounds.left-1; j<Bounds.right+2; j++){
-      // console.log("**", j, i, isVisible[j][i]);
-      str += BoardCharToElement(board[j][i], isVisible[j][i], isPos[j][i]);
+      str += BoardCharToElement(board[j][i], isPos[j][i], classesOfBoard[j][i]);
     }
     str += "</div>";
   }
@@ -615,21 +609,23 @@ function BoardToHtml(blank){
 }
 
 
-function BoardCharToElement(c, isVisible, isPos){
+function BoardCharToElement(c, isPos, classesOfBoard){
   var arr=['square'];
   if(isPos){
     arr=['posCell'];
   }
   else{
-    if(c && c != ' '){
+    if(c && c != ' '){ // is a character in crossword
       arr.push('letter');
+      for(var i = 0; i < classesOfBoard.length; i++){
+        arr.push('letterOf' + classesOfBoard[i].toString());
+      }
       if(challengeAnswer.includes(c)){
         arr.push('redLetter');
         challengeAnswer = challengeAnswer.replace(c, '~');
       }
     }
   }
-  if(isVisible) arr.push('visibleCell');
   return EleStr('div',[{a:'class',v:arr}],c);
 }
 
@@ -670,7 +666,7 @@ function EleStr(e,c,h){
   for(var i=0,s="<"+e+" "; i<c.length; i++){
     s+=c[i].a+ "='"+ArrayToString(c[i].v," ")+"' ";    
   }
-  return (s+">"+h+"</"+e+">");
+  return (s+">"+"<span>"+h+"</span>"+"</"+e+">");
 }
 
 function ArrayToString(a,s){
@@ -705,6 +701,18 @@ String.prototype.replaceAll = function (replaceThis, withThis) {
 
 Create();
 // Play();
+
+function redisplayCrosswords(){
+  // Re-create the crossword
+  document.getElementById("crossword").innerHTML = BoardToHtml(" ");
+  var letterArr = document.getElementsByClassName('letter');
+  for(var i = 0; i < letterArr.length; i++){
+    // skip visible cells
+    if(letterArr[i].classList.contains('visibleCell')) continue;
+    // hide invisible cells
+    letterArr[i].innerHTML = "";
+  }
+}
 
 let countDownBox = $("#countDown");
 
@@ -765,6 +773,8 @@ $("#showQuestion").click(function(event){
     $("#questionNumber").text("Ô chữ số "+currentQuestionID);
     $("#questionContent").text(questionContent);
     makeAjaxCall(questionContent, currentQuestionID);
+    // 
+    $(".letterOf" + currentQuestionID.toString()).css("background-color", "red");
   }
 });
 
@@ -775,41 +785,15 @@ $("#showAnswer").click(function(event){
     $("#questionContent").text("Vui lòng chọn số thứ tự hợp lệ!");
   }
   else{
-    currentQuestion = questions[currentQuestionID - 1];
-    answer = currentQuestion["answer"];
-    for(var idx = 0; idx < wordsActive.length; idx++){
-      let testAnswerLen = wordsActive[idx].string.length;
-      let testAnswer = wordsActive[idx].string.substring(2, testAnswerLen-1);
-      // console.log("@@@" + testAnswer + "---" + answer);
-      if(testAnswer != answer) continue;
-      for(var i = 0, len = wordsActive[idx].char.length; i < len; i++){
-        var xIndex = wordsActive[idx].x,
-            yIndex = wordsActive[idx].y;
-        
-        if (wordsActive[idx].dir === 0){
-          xIndex += i;    
-          isVisible[xIndex][yIndex] = true;
-          // console.log(">", xIndex, yIndex);
-        }
-        else{
-          yIndex += i;  
-          isVisible[xIndex][yIndex] = true;
-          // console.log("^", xIndex, yIndex);
-        }
-      }      
-      break;
-    }
-    // Re-create the crossword
-    document.getElementById("crossword").innerHTML = BoardToHtml(" ");
-    var letterArr = document.getElementsByClassName('letter');
-    for(var i = 0; i < letterArr.length; i++){
-      console.log("have!!");
-      // skip visible cells
-      if(letterArr[i].classList.contains('visibleCell')) continue;
-      // hide invisible cells
-      letterArr[i].innerHTML = "<input class='char' type='text' maxlength='1'></input>";
-    }
+    $(".letterOf" + currentQuestionID.toString()).css("background-color", "rgb(255,255,255)");
+    $(".letterOf" + currentQuestionID.toString() + " span").show();
   }
+});
+
+$("#wrongAnswer").click(function(event){
+  // Change bg color to gray for wrong answers
+  currentQuestionID = parseInt(document.getElementById("id_ochu").value);
+  $(".letterOf" + currentQuestionID.toString()).css("background-color", "#808080");
 });
 
 // Function to wait for the ringing of the bell
@@ -850,7 +834,7 @@ $("#resetStateBtn").click(function(){
       ringingDialog.dialog('close');
     }
   });
-})
+});
 
 </script>
 {% endblock %}
