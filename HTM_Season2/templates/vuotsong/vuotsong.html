@@ -137,6 +137,9 @@ body{
   -ms-user-select: text;
   user-select: text;
 }
+.redLetter{
+  color: red;
+}
 .char:focus{
   -webkit-box-shadow: 0 0 0 2px rgba(255,32,32,1);
   -moz-box-shadow: 0 0 0 2px rgba(255,32,32,1);
@@ -283,6 +286,7 @@ console.log(questions)
 
 var currentQuestionID = 10;
 var questionContent = ""
+var challengeAnswer;
 
 //---------------------------------//
 //   GLOBAL VARIABLES              //
@@ -380,8 +384,10 @@ function GetWordsFromInput(){
   for(var idx=0; idx<questions.length; idx++){
     let currentQuestion = questions[idx];
     let currentAnswer = currentQuestion["answer"];
-    wordArr.push(currentAnswer)
+    wordArr.push(currentAnswer);
   }
+  challengeAnswer = wordArr[wordArr.length - 1];
+  wordArr.pop();
   // wordArr = ["DANANG", "TAMKY", "GIALAI", "LONGAN"];  
   // for(var i=0,val,w=document.getElementsByClassName("word");i<w.length;i++){
   //   val = w[i].value.toUpperCase();
@@ -615,7 +621,13 @@ function BoardCharToElement(c, isVisible, isPos){
     arr=['posCell'];
   }
   else{
-    if(c && c != ' ') arr.push('letter');
+    if(c && c != ' '){
+      arr.push('letter');
+      if(challengeAnswer.includes(c)){
+        arr.push('redLetter');
+        challengeAnswer = challengeAnswer.replace(c, '~');
+      }
+    }
   }
   if(isVisible) arr.push('visibleCell');
   return EleStr('div',[{a:'class',v:arr}],c);
