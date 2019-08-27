@@ -35,10 +35,10 @@ body{
 
 #question {
     background-color: bisque;
-    margin-top: 2em;
+    margin-top: 0.5em;
 }
 #questionContent, .questionNumber {
-    font-size: 40px;
+    font-size: 28px;
 }
 .questionNumber, #nextQuestion {
     margin-top: 0.1em;
@@ -173,29 +173,54 @@ body{
 {% endblock %}
 
 {% block content %}
-<div class="crossword_container">
-  <button class="btn btn-success btn-lg crossword_btn" id="btnCreate">Xáo trộn vị trí</button>
-  <button class="btn btn-default btn-lg crossword_btn" id="btnPlay">Ẩn đáp án</button>
-  <br/><br/>  
-
-  <div class="center crossword" id="crossword"></div><br/>
-
-<!--   <div class="center">
-
-    <div class="line">
-      <input class="word" type="text" value="Tucan" />
-      <input class="clue" value="A tropical bird with a large beak" />
-    </div>
-
-    <div class="line">
-      <input class="word" type="text" value="Pig"/>
-      <input class="clue" value="Bosses of the farm in Orwell's world" />
-    </div>
-
-  </div> -->
-</div>
 <div class="container-fluid">
 
+<div class="row">
+  <div class="col-7">
+    <div class="crossword_container">
+      <button class="btn btn-success btn-lg crossword_btn" id="btnCreate">Xáo trộn vị trí</button>
+      <button class="btn btn-default btn-lg crossword_btn" id="btnPlay">Ẩn đáp án</button>
+      <br/><br/>  
+
+      <div class="center crossword" id="crossword"></div><br/>
+
+    </div>
+  </div>
+
+  <!-- Question area -->
+  <div class="col-5">
+    <div class="row" id="content">
+      <div class="col-sm-10" id="question">
+          <div class="row">
+              <div class="col-sm-10">
+                  <p class="questionNumber"><span id="questionNumber">Vòng VƯỢT SÓNG!</span><span></span></p>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-10">
+                  <p id="questionContent"></p>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-10" id="questionFile">
+                  
+              </div>
+          </div>
+      </div>
+      <div class="col-sm-2" id="manageAnswer">
+          <div class="row">
+              <div class="col-sm-2">
+                  <button type="button" id="countDown" class="countdown_btn btn btn-danger" style="width:80px; height:80px; font-size: 20px">10</button>
+              </div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-sm-8">
   <!-- Controls for ô chữ -->
 
   <label for="id_ochu" class="label_chonochu"><b>Chọn ô chữ số:</b></label>
@@ -203,32 +228,9 @@ body{
   <button class="btn btn-info btn-lg crossword_btn" id="showQuestion">Hiện câu hỏi</button>
   <button class="btn btn-danger btn-lg crossword_btn" id="showAnswer">Hiện đáp án</button>
   <button class="btn btn-success btn-lg crossword_btn" id="wrongAnswer">Sai</button>
-
-  <!-- Question area -->
-    <div class="row" id="content">
-    <div class="col-9" id="question">
-        <div class="row">
-            <div class="col-12">
-                <p class="questionNumber"><span id="questionNumber">Vòng VƯỢT SÓNG!</span><span></span></p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <p id="questionContent"></p>
-            </div>
-            <div class="col-12" id="questionFile">
-                
-            </div>
-        </div>
-    </div>
-    <div class="col-3" id="manageAnswer">
-        <div class="row">
-            <div class="col-12">
-                <button type="button" id="countDown" class="countdown_btn btn btn-danger" style="width:150px; height:150px; font-size: 70px">10</button>
-            </div>
-        </div>
-    </div>
   </div>
+</div>
+
 </div>
 
 <div id="ringingDialog" title="THÔNG BÁO">
@@ -765,7 +767,7 @@ $("#showQuestion").click(function(event){
         } else if (questionFileType == "video") {
             fileDisplay.append("<video width='576' height='432' controls><source src=" + questionFile + " type='video/mp4'></video>");
         } else if (questionFileType == "sound") {
-            let htmlString = "<audio controls><source src="+ questionFile + " type='audio/mpeg'>Your browser does not support the audio element.</audio>"
+            let htmlString = "<audio controls style='width: 175px'><source src="+ questionFile + " type='audio/mpeg'>Your browser does not support the audio element.</audio>"
             fileDisplay.append(htmlString);
         }
     }
