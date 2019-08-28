@@ -151,15 +151,15 @@
                 $.ajax({
                     url: "{% url 'getDapAnThiSinh' %}",
                     success: function (data) {
-                        data = JSON.parse(data)
+                        data = JSON.parse(data);
+                        $("#dapAnThiSinh").html("");
                         // Loop over data and update to the view
                         for (let i = 0; i < data.length; i++) {
                             const answer = data[i];
                             var newAnswer = document.createElement("div");
                             newAnswer.setAttribute("class", "answer col");
                             newAnswer.innerHTML = "<span style='font-weight: bold'> " + answer.thisinh + "</span>" + ": " + answer.answer
-                            // $("#dapAnThiSinh").append(newAnswer);
-                            $("#dapAnThiSinh").html(newAnswer);
+                            $("#dapAnThiSinh").append(newAnswer);
                         }
 
                     }
