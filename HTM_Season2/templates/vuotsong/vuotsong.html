@@ -19,8 +19,21 @@ body{
   user-select: none;
 }*/
 
-.countdownProgress{
+.answer {
+  text-align: left;
+  background-color: bisque;
+  font-size: 20px;
+  margin: 10px;
+  min-height: 70px;
+  /* min-width: 300px; */
+}
+
+#showDapAnThiSinh{
   margin-top: 1em;
+}
+
+.countdownProgress{
+  margin-top: 0em;
 }
 
 .ui-dialog .ui-dialog-title {
@@ -72,7 +85,7 @@ body{
 }
 
 .crossword_btn{
-  margin: 18px 8px 0;  
+  margin: 0px 8px 0;  
 }
 /*.crossword_btn{
   width: 172px;
@@ -199,13 +212,12 @@ body{
     <div class="row">
       <div class="col-sm-10">
       <!-- Controls for ô chữ -->
-
-      <label for="id_ochu" class="label_chonochu"><b>Chọn ô chữ số:</b></label>
-      <input type="number" id="id_ochu" name="id_ochu" min="1" max="9"><br>
       <div class="btn-group">
-        <button class="btn btn-info btn-md crossword_btn" id="showQuestion">Hiện câu hỏi</button>
-        <button class="btn btn-danger btn-md crossword_btn" id="showAnswer">Hiện đáp án</button>
-        <button class="btn btn-success btn-md crossword_btn" id="wrongAnswer">Sai</button>
+        <label for="id_ochu" class="label_chonochu"><b>Hàng:</b></label>
+        <input type="number" id="id_ochu" name="id_ochu" min="1" max="9"><br>
+        <button class="btn btn-info btn-md crossword_btn" id="showQuestion">Câu hỏi</button>
+        <button class="btn btn-success btn-md crossword_btn" id="showAnswer">Đúng</button>
+        <button class="btn btn-danger btn-md crossword_btn" id="wrongAnswer">Sai</button>
         </div>
       </div>
     </div>
@@ -243,6 +255,13 @@ body{
           <div class="progress-bar progress-bar-striped bg-danger progress-bar-animated" style="width:100%" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" id="countDownProgressBar"></div>
         </div>
       </div>
+    </div>
+    <div class="row">
+            <div class="col-sm-12">
+                <button type="button" id="showDapAnThiSinh" class="btn btn-primary">Đáp án thí sinh</button>
+            </div>
+            <div class="col-sm-12" id="dapAnThiSinh" style="display:none">
+            </div>
     </div>
   </div>
 
@@ -742,59 +761,76 @@ function redisplayCrosswords(){
   }
 }
 
+// Send signal to handleAcceptingAnswer
+function signalHandleAcceptingAnswer() {
+    $.ajax({
+        url: "{% url 'handleAcceptingAnswer' %}",
+        method: "GET",
+        traditional: true,
+        success: function (data) {
+            // Do nothing
+        }
+    })
+}
+
 let countDownProgressBar = $("#countDownProgressBar");
 
 countDownProgressBar.click(function(){    
     var demgio = new Audio("{% static 'khoidong/ChinhPhuc_15s.mp3' %}");
     demgio.play();
 
+    // Signal the server to accept answers
+    signalHandleAcceptingAnswer();
+
     // Countdown 15s
     var countDownInterval = null;
     var totalTime = 15000;
     var remainingTime = totalTime;
+
     countDownInterval =  setInterval(function () {
         remainingTime -= 50;
         if (remainingTime >= 0) {
             countDownProgressBar.css("width", (remainingTime*100 / totalTime) + "%");
         } else {
-            clearInterval(countDownInterval);
+          // Send the request to server to stop received data
+          signalHandleAcceptingAnswer();
+
+          // Make request to get the final answer
+          $.ajax({
+              url: "{% url 'getDapAnThiSinh' %}",
+              success: function (data) {
+                  data = JSON.parse(data)
+                  // Loop over data and update to the view
+                  for (let i = 0; i < data.length; i++) {
+                      const answer = data[i];
+                      var newAnswer = document.createElement("div");
+                      newAnswer.setAttribute("class", "answer col");
+                      newAnswer.innerHTML = "<span style='font-weight: bold'> " + answer.thisinh + "</span>" + ": " + answer.answer
+                      // $("#dapAnThiSinh").append(newAnswer);
+                      console.log("$$$$-!!!: " + answer.answer);
+                      $("#dapAnThiSinh").html(newAnswer);
+                  }
+
+              }
+          });
+          clearInterval(countDownInterval);
         }
     }, 50);
 });
 
-let countDownBox = $("#countDown");
-
-countDownBox.click(function() {
-    // Disable the button to avoid second click
-    countDownBox.attr("disabled", "disabled");
-    
-    var demgio = new Audio("{% static 'khoidong/ChinhPhuc_15s.mp3' %}");
-    demgio.play();
-
-    // Countdown 10s
-    var countDownInterval = null;
-    countDownInterval =  setInterval(function () {
-        var newTime = parseInt(countDownBox.text()) - 1;
-        if (newTime >= 0) {
-            countDownBox.text(newTime);
-        } else {
-            clearInterval(countDownInterval);
-            countDownBox.text("10");
-            // Enable the box again for next question
-            countDownBox.removeAttr("disabled");
-        }
-    }, 1000);
-});
-
 // Function to display question on screen
 $("#showQuestion").click(function(event){
-  countDownProgressBar.css("width", "100%");
   currentQuestionID = parseInt(document.getElementById("id_ochu").value);
   if(isNaN(currentQuestionID) || (currentQuestionID < 0) || (currentQuestionID > questions.length)){
     $("#questionNumber").text("Oops!");
     $("#questionContent").text("Vui lòng chọn số thứ tự hợp lệ!");
   }
   else{
+    // Refresh UI
+    countDownProgressBar.css("width", "100%");
+    $("#showDapAnThiSinh").prop("disabled", false);
+    $("#dapAnThiSinh").hide();
+
     currentQuestion = questions[currentQuestionID - 1];
     questionContent = currentQuestion["questionText"];
     let currentQuestionLen = currentQuestion["answer"].length;
@@ -802,7 +838,7 @@ $("#showQuestion").click(function(event){
     let questionFile = currentQuestion["file"];
     let fileDisplay = $("#questionFile");
     fileDisplay.empty();
-    
+
     console.log(`====> Question file ${questionFile}`);
 
     if (questionFile) {
@@ -835,6 +871,8 @@ $("#showAnswer").click(function(event){
     $("#questionContent").text("Vui lòng chọn số thứ tự hợp lệ!");
   }
   else{
+    var congratAudio = new Audio("{% static 'vuotsong/VCNV_cau_dung.mp3' %}");
+    congratAudio.play();
     $(".letterOf" + currentQuestionID.toString()).css("background-color", "rgb(255,255,255)");
     $(".letterOf" + currentQuestionID.toString() + " span").show();
   }
@@ -886,6 +924,12 @@ $("#resetStateBtn").click(function(){
       ringingDialog.dialog('close');
     }
   });
+});
+
+// Show dap an thi sinh
+$("#showDapAnThiSinh").click(function () {
+  this.setAttribute("disabled", "disabled");        
+  $("#dapAnThiSinh").show();
 });
 
 </script>
