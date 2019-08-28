@@ -218,7 +218,12 @@ def getDapAnThiSinh(request):
         answers = VuotSongAnswer.objects.filter(question=question)
 
     # Get all the id of thisinh that submit the answer
-    thisinh_id = set([thisinh["thisinh"] for thisinh in answers.values("thisinh")])
+    # thisinh_id = set([thisinh["thisinh"] for thisinh in answers.values("thisinh")])
+    thisinh_id = []
+    for thisinh in answers.values("thisinh"):
+        if thisinh["thisinh"] in thisinh_id:
+            continue
+        thisinh_id.append(thisinh["thisinh"])
     
     # Go through the answers and only retrieve the final answer of each
     final_answers = []
