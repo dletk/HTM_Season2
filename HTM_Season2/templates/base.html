@@ -61,16 +61,8 @@
                 <li class="nav-item">
                     <a class="nav-link btn btn-outline-danger" href="{% url 'tangtoc' %}">Bứt phá</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="vedichDropdown" role="button" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        Chinh phục
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="vedichDropdown">
-                        <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="">Gói 40</a>
-                        <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="">Gói 60</a>
-                        <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="">Gói 80</a>
-                    </div>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-outline-info" href="{% url 'chinhphuc' %}">Chinh phục</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
@@ -86,7 +78,7 @@
                         <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="{% url 'newKhoiDongQuestion'%}">Nhổ neo</a>
                         <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="{% url 'newVuotSongQuestion' %}">Vượt sóng</a>
                         <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="{% url 'newTangTocQuestion'%}">Bứt phá</a>
-                        <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="">Chinh phục</a>
+                        <a class="nav-link btn btn-sm btn-outline-secondary" style="margin:3px" href="{% url 'newChinhPhucQuestion'%}">Chinh phục</a>
                     </div>
                 </li>
                 <li class="nav-item">
