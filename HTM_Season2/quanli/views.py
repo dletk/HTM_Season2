@@ -215,7 +215,7 @@ def getDapAnThiSinh(request):
     if currentRound == "khoidong":
         answers = KhoiDongAnswer.objects.filter(question=question)
     else:
-        answers = KhoiDongAnswer.objects.filter(question=question)
+        answers = VuotSongAnswer.objects.filter(question=question)
 
     # Get all the id of thisinh that submit the answer
     thisinh_id = set([thisinh["thisinh"] for thisinh in answers.values("thisinh")])
