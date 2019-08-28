@@ -45,7 +45,7 @@
             <span class="border rounded border-secondary p-5 mr-7" style="background-color: white">
                 <h3 class="d-flex justify-content-center p-2">
                     {% if answerView %}
-                    Nộp đáp án
+                    Trả lời
                     {% else %}
                     Create new data
                     {% endif %}
@@ -53,7 +53,7 @@
                 <form method="POST" enctype="multipart/form-data">
                     {{ form.as_p }}
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary btn-outline-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary btn-outline-primary">Gửi</button>
                     {% if answerView %}
                     <button id="ringBell" class="btn btn-success float-right">
                         Bấm chuông
