@@ -1,2 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block scripts %}
+<script>
+    // Store all questions in an array
+    let questions = {{ questions|safe }};
+
+    console.log(questions);
+</script>
+{% endblock %}
