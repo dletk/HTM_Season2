@@ -126,14 +126,13 @@
         let questionContent = currentQuestion["questionText"];
         let questionFileType = currentQuestion["fileType"];
         let questionFile = currentQuestion["file"];
+        let fileDisplay = $("#questionFile");
+        fileDisplay.empty();
 
         console.log(`====> Question file ${questionFile}`);
 
         if (questionFile) {
-            let fileDisplay = $("#questionFile");
-
-            fileDisplay.empty();
-
+            
             console.log(`=====> ${questionFileType}`);
             
             if (questionFileType == "image") {

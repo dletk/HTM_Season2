@@ -33,6 +33,10 @@ body{
     padding: 0;
 }
 
+.dumboo{
+  text-align: justify;
+}
+
 .countdown_btn {
     margin-bottom: 0.3em;
     margin-top: 0.5em;
@@ -214,7 +218,7 @@ body{
               </div>
           </div>
           <div class="row">
-              <div class="col-sm-12">
+              <div class="col-sm-12 dumboo">
                   <p id="questionContent"></p>
               </div>
           </div>
@@ -796,14 +800,14 @@ $("#showQuestion").click(function(event){
     let currentQuestionLen = currentQuestion["answer"].length;
     let questionFileType = currentQuestion["fileType"];
     let questionFile = currentQuestion["file"];
-
+    let fileDisplay = $("#questionFile");
+    fileDisplay.empty();
+    
     console.log(`====> Question file ${questionFile}`);
 
     if (questionFile) {
-        let fileDisplay = $("#questionFile");
 
-        fileDisplay.empty();
-
+        console.log(`=====> ${questionFileType}`);
         console.log(`=====> ${questionFileType}`);
         
         if (questionFileType == "image") {
