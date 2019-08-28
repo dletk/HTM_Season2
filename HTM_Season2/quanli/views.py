@@ -148,7 +148,6 @@ def ringBell(request):
 
     if request.method == "GET":
         # The person is already ringed
-        print(allRingers)
         if str(request.user) in allRingers:
             result = {"ringerName": "luong"}
             return JsonResponse(json.dumps(result), safe=False)
