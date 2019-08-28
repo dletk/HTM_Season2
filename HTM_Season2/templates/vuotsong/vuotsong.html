@@ -322,6 +322,7 @@ var Bounds = {
 
 function Play(){
   $(".letter span").hide();
+  $(".letter.redLetter").css("background-color", "green");
   $("#btnCreate").hide();
   $("#btnPlay").hide();
 }
@@ -790,12 +791,14 @@ $("#showAnswer").click(function(event){
     $(".letterOf" + currentQuestionID.toString()).css("background-color", "rgb(255,255,255)");
     $(".letterOf" + currentQuestionID.toString() + " span").show();
   }
+  $(".letter.redLetter").css("background-color", "green");
 });
 
 $("#wrongAnswer").click(function(event){
   // Change bg color to gray for wrong answers
   currentQuestionID = parseInt(document.getElementById("id_ochu").value);
   $(".letterOf" + currentQuestionID.toString()).css("background-color", "#808080");
+  $(".letter.redLetter").css("background-color", "green");
 });
 
 // Function to wait for the ringing of the bell
