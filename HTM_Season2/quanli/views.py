@@ -29,6 +29,7 @@ FORM_CLASSES = {
                 }
 
 currentRinger = ""
+allRingers = []
 
 # Create your views here.
 @login_required
@@ -143,8 +144,14 @@ def ringBell(request):
         POST: Update the current ringer name
     """ 
     global currentRinger
+    global allRingers
 
     if request.method == "GET":
+        # The person is already ringed
+        print(allRingers)
+        if str(request.user) in allRingers:
+            result = {"ringerName": "luong"}
+            return JsonResponse(json.dumps(result), safe=False)
         # Return currentRinger
         result = {"ringerName": currentRinger}
         return JsonResponse(json.dumps(result), safe=False)
@@ -152,7 +159,11 @@ def ringBell(request):
         # Another person ringed
         if len(currentRinger) > 0:
             return HttpResponseForbidden()
+        # The person is already ringed
+        if str(request.user) in allRingers:
+            return HttpResponseForbidden()
         currentRinger = str(request.user)
+        allRingers.append(currentRinger)
         print(currentRinger, "ringed a bell!")
         return HttpResponse("Ringed!")
 
