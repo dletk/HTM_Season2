@@ -14,7 +14,7 @@ def questionDirectoryPath(instance, filename):
 
 class VuotSongQuestion(models.Model):
     """
-    Model for question in Khoi Dong round
+    Model for question in Vuot Song round
     """
 
     # The question ID in in this round
@@ -45,7 +45,7 @@ class VuotSongQuestion(models.Model):
 
 class VuotSongAnswer(models.Model):
     """
-    Model for the answer of constestant for Khoi Dong round
+    Model for the answer of constestant for Vuot Song round
     """
 
     # The question associated with this answer
