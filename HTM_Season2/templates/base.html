@@ -93,16 +93,18 @@
         </div>
     </div>
 </body>
-{% if footerDisplay %}
+
 <footer class="page-footer">
     <div class="container">
+        {% if footerDisplay %}
         <b>
         <span>Developers: LE_MAI_THANH_DUC, DOAN_NGUYEN_THANH_LUONG - 2019. Report bugs: <a href="mailto:duc.mtle@gmail.com">duc.mtle@gmail.com</a> or <a href="mailto:luongd@unist.ac.kr">luongd@unist.ac.kr</a></span>
         </b>
+        {% endif %}
         <button class="btn btn-success" id="toggleNavbar">Ẩn/hiện menu</button>
     </div>
 </footer>
-{% endif %}
+
 <script src="{% static 'jquery.js' %}"></script>
 <script src="{% static 'jquery-ui.min.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
