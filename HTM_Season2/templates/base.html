@@ -93,6 +93,7 @@
         </div>
     </div>
 </body>
+{% if footerDisplay %}
 <footer class="page-footer">
     <div class="container">
         <b>
@@ -101,6 +102,7 @@
         <button class="btn btn-success" id="toggleNavbar">Ẩn/hiện menu</button>
     </div>
 </footer>
+{% endif %}
 <script src="{% static 'jquery.js' %}"></script>
 <script src="{% static 'jquery-ui.min.js' %}"></script>
 <script src="{% static 'popper.min.js' %}"></script>
