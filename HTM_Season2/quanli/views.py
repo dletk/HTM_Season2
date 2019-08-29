@@ -121,7 +121,28 @@ def currentQuestion(request):
     global currentQuestionContent, currentQuestionID, currentRound, acceptingAnswer
 
     if request.method == "GET":
+        # Get the current question
+        if currentRound == "khoidong":
+            question = KhoiDongQuestion.objects.get(questionID=currentQuestionID)
+        else:
+            question = VuotSongQuestion.objects.get(questionID=currentQuestionID)
+
+        # Get all answers for this question
+        if currentRound == "khoidong":
+            lastAnswer = KhoiDongAnswer.objects.filter(question=question).filter(thisinh=request.user).order_by("-id")
+        else:
+            lastAnswer = VuotSongAnswer.objects.filter(question=question).filter(thisinh=request.user).order_by("-id")
+
+        # print("***", question.values("questionText"))
+        # for myiter in lastAnswer.values("answer"):
+        #     print("###", myiter)
+        lastAnswer = lastAnswer.values("answer")
+
+        if len(lastAnswer) > 0:
+            lastAnswer = lastAnswer[0]["answer"]
+            return JsonResponse(json.dumps(dict(question=currentQuestionContent, answer=lastAnswer)), safe=False)
         return JsonResponse(json.dumps(dict(question=currentQuestionContent)), safe=False)
+    
     elif request.method == "POST":
         if request.user.is_staff:
             dataPost = request.POST

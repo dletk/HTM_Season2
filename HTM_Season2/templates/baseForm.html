@@ -53,11 +53,14 @@
                 <form method="POST" enctype="multipart/form-data">
                     {{ form.as_p }}
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary btn-outline-primary">Gửi</button>
+                    <button type="submit" id="submitBtn" class="btn btn-primary btn-outline-primary">Gửi</button>
                     {% if answerView %}
                     <button id="ringBell" class="btn btn-success float-right">
                         Bấm chuông
                     </button>
+                    <br><br>
+                    <h5>Câu trả lời vừa gửi: </h5>
+                    <b><h5 id="thiSinhSubmission"></h5></b>
                     {% endif %}
                 </form>
             </span>
@@ -136,6 +139,9 @@
             success: function(data) {
                 data = JSON.parse(data);
                 $("#questionContent").text(data.question);
+                if(data.hasOwnProperty('answer')){
+                    $("#thiSinhSubmission").text(data.answer);
+                }
             }
         })
     }, 500);
