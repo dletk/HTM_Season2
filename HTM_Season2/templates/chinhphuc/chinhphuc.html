@@ -1,10 +1,314 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block style %}
+<style>
+
+    table{
+        width: 490px;
+        margin-top: 2em;
+    }
+
+    td{
+        width: 70px;
+        height: 70px;
+        position: relative;
+    }
+
+    td .cellContent{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 69px;
+        font-size: 27px;
+    }
+
+    td .cellContent:hover{
+        background: orange;
+        color: white;
+    }
+
+    td .boardCoordinate{
+        font-weight: bold;
+        color: red;
+        background-color: gray;
+        border: none;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 69px;
+        font-size: 27px;
+    }
+
+    #showDapAnThiSinh{
+        margin-top: 1em;
+    }
+
+    .col, .row {
+        text-align: center;
+        padding: 0;
+    }
+
+    .dumboo{
+        text-align: justify;
+    }
+
+    #question {
+        background-color: bisque;
+        margin-top: 0.5em;
+    }
+    #questionContent, .questionNumber {
+        font-size: 28px;
+    }
+
+    #questionAnswer{
+        font-size: 25px;
+    }
+
+    .questionNumber, #nextQuestion {
+        margin-top: 0.1em;
+    }
+    .questionNumber {
+        margin-bottom: 0;
+        color: red;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-8">
+            <table border="1" id="gomoku">
+            </table>
+        </div>
+
+        <div class="col-4">
+
+            <div class="row">
+                <div class="col-sm-12">
+                <!-- Controls for ô chữ -->
+                <div class="btn-group">
+                    <label for="id_ochu" class="label_chonochu"><b>Hàng:</b></label>
+                    <input type="number" id="id_row" name="id_row" min="1" max="6"><br>
+                    <label for="id_ochu" class="label_chonochu"><b>Cột:</b></label>
+                    <input type="number" id="id_col" name="id_col" min="1" max="6"><br>
+                    <button class="btn btn-info btn-md crossword_btn" id="showQuestion">Câu hỏi</button>
+                    <button class="btn btn-success btn-md crossword_btn" id="showAnswer">Đúng</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="row" id="content">
+                <div class="col-sm-12" id="question">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p class="questionNumber"><span id="questionNumber">Vòng chinh phục!</span><span></span></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 dumboo">
+                            <p id="questionContent"></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <i><b><p id="questionAnswer"></p></b></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" id="questionFile">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div> 
+</div>
+
+{% endblock %}
 {% block scripts %}
 <script>
+    // Board size
+    const BOARD_SIZE = 6;
+
+    // Initialize questions 2D-array
+    var questionAt = [];
+
     // Store all questions in an array
     let questions = {{ questions|safe }};
 
     console.log(questions);
+
+    function randInt(low, high){
+        randLow = Math.floor(Math.random() * 1000000) % (high-low+1);
+        return high - randLow;
+    }
+
+    function randElt(givenList){
+        var idx = randInt(1, givenList.length) - 1;
+        return givenList[idx];
+    }
+
+    function shuffle(givenList){
+        idxList = [];
+        valList = []
+        
+        for(var i = 0; i < givenList.length; i++){
+            idxList.push(i);
+            valList.push(randInt(1, 10000));
+        }
+
+        idxList.sort(function(a, b){
+            return valList[a] - valList[b];
+        });
+
+        newList = [];
+
+        for(var i = 0; i < givenList.length; i++){
+            newList.push(givenList[ idxList[i] ]);
+        }
+
+        return newList;
+    }
+
+    function createBangSo(nEasy, nMedium, nHard){
+        easy_questions = [];
+        medium_questions = [];
+        hard_questions = [];
+        var i, j;
+        for(i = 0; i < questions.length; i++){
+            if(questions[i].difficulty == "easy"){
+                easy_questions.push(questions[i]);
+            }
+            else if(questions[i].difficulty == "medium"){
+                medium_questions.push(questions[i]);
+            }
+            else{
+                hard_questions.push(questions[i]);
+            }
+        }
+
+        htmlContent = '';
+
+        for(i = 0; i <= BOARD_SIZE; i++){
+            htmlContent += '<tr>';
+            if(i != 0) questionAt.push([]);
+            for(j = 0; j <= BOARD_SIZE; j++){
+                if((i == 0) || (j == 0)){
+                    // Coordinate cell
+                    htmlContent += '<td><div class="boardCoordinate">';
+                    if(j != 0)
+                        htmlContent += j.toString();
+                    else if(i != 0)
+                        htmlContent += i.toString();
+                    htmlContent += '</div></td>';
+                    continue;
+                }
+
+                htmlContent += '<td><div class="cellContent board' + i.toString() + j.toString() + '">';
+                let randVal = randInt(1, nEasy+nMedium+nHard);
+                if(randVal <= nEasy){
+                    questionAt[i - 1].push(easy_questions.pop());
+                    nEasy -= 1;
+                }
+                else if (randVal <= nEasy + nMedium){
+                    questionAt[i - 1].push(medium_questions.pop());
+                    nMedium -= 1;
+                    htmlContent += '!';
+                }
+                else{
+                    questionAt[i - 1].push(hard_questions.pop());
+                    nHard -= 1;
+                    htmlContent += '?';
+                }
+                htmlContent += '</div></td>';
+            }
+            htmlContent += '</tr>';
+        }
+
+        $("#gomoku").html(htmlContent);
+    }
+
+    function randomizeQuestions(){
+        questions = [];
+        var i;
+        for(i = 0; i < 20; i++)
+            questions.push({questionText: "Who has impressed you most with what they’ve accomplished?", answer: "luong", difficulty: "easy"});
+        for(i = 0; i < 20; i++)
+            questions.push({questionText: "What are you interested in that most people haven’t heard of?", answer: "salary", difficulty: "medium"});
+        for(i = 0; i < 20; i++)
+            questions.push({questionText: "What could you give a 40-minute presentation on with absolutely no preparation?", answer: "liang", difficulty: "hard"});
+        questions = shuffle(questions);
+    }
+
+    randomizeQuestions();
+    createBangSo(14, 12, 10);
+
+    // Function to display question on screen
+    $("#showQuestion").click(function(event){
+        currentRow = parseInt(document.getElementById("id_row").value);
+        currentCol = parseInt(document.getElementById("id_col").value);
+        if(isNaN(currentRow) || isNaN(currentCol)){
+            $("#questionNumber").text("Oops!");
+            $("#questionContent").text("Vui lòng chọn tọa độ hợp lệ!");
+        }
+        else{
+            // Refresh UI
+            // countDownProgressBar.css("width", "100%");
+
+            currentQuestion = questionAt[currentRow - 1][currentCol - 1];
+            questionContent = currentQuestion["questionText"];
+
+            let questionFileType = currentQuestion["fileType"];
+            let questionFile = currentQuestion["file"];
+            let fileDisplay = $("#questionFile");
+            fileDisplay.empty();
+
+            console.log(`====> Question file ${questionFile}`);
+
+            if (questionFile) {
+
+                console.log(`=====> ${questionFileType}`);
+
+                if (questionFileType == "image") {
+                    fileDisplay.append("<img width='576' height='432' src=" + questionFile + ">");
+                } else if (questionFileType == "video") {
+                    fileDisplay.append("<video width='576' height='432' controls><source src=" + questionFile + " type='video/mp4'></video>");
+                } else if (questionFileType == "sound") {
+                    let htmlString = "<audio controls style='width: 175px'><source src="+ questionFile + " type='audio/mpeg'>Your browser does not support the audio element.</audio>"
+                    fileDisplay.append(htmlString);
+                }
+            }
+
+            $("#questionNumber").text("Hàng số "+currentRow + ", cột số " + currentCol);
+            $("#questionContent").text(questionContent);
+        }
+    });
+
+    $("#showAnswer").click(function(event){
+        currentRow = parseInt(document.getElementById("id_row").value);
+        currentCol = parseInt(document.getElementById("id_col").value);
+        if(isNaN(currentRow) || isNaN(currentCol)){
+            $("#questionNumber").text("Oops!");
+            $("#questionContent").text("Vui lòng chọn tọa độ hợp lệ!");
+        }
+        else{
+            var congratAudio = new Audio("{% static 'vuotsong/VCNV_cau_dung.mp3' %}");congratAudio.play();
+
+            currentQuestion = questionAt[currentRow - 1][currentCol - 1];
+            let questionAnswer = currentQuestion["answer"];
+
+            $("#questionAnswer").text("Đáp án: " + questionAnswer);
+        }
+    });
+
 </script>
 {% endblock %}
