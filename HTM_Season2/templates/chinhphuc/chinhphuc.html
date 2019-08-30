@@ -26,6 +26,7 @@
         vertical-align: middle;
         line-height: 69px;
         font-size: 27px;
+        font-weight: bold;
     }
 
     td .cellContent:hover{
@@ -36,7 +37,7 @@
     td .boardCoordinate{
         font-weight: bold;
         color: red;
-        background-color: gray;
+        background-color: #d3d3d3; /* light gray */
         border: none;
         text-align: center;
         vertical-align: middle;
@@ -99,8 +100,18 @@
                     <input type="number" id="id_row" name="id_row" min="1" max="6"><br>
                     <label for="id_ochu" class="label_chonochu"><b>Cột:</b></label>
                     <input type="number" id="id_col" name="id_col" min="1" max="6"><br>
-                    <button class="btn btn-info btn-md crossword_btn" id="showQuestion">Câu hỏi</button>
-                    <button class="btn btn-success btn-md crossword_btn" id="showAnswer">Đúng</button>
+                    
+                    <button class="btn btn-info btn-sm crossword_btn" id="showQuestion">Câu hỏi</button>
+                    <button class="btn btn-success btn-sm crossword_btn" id="showAnswer">Đúng</button>
+
+                    <select id="colorselector">
+                        <option value="1" data-color="#ff0000">Red</option>
+                        <option value="2" data-color="#ffff00" selected="selected">Yellow</option>
+                        <option value="3" data-color="#0000ff">Blue</option>
+                        <option value="4" data-color="#00ff00">Green</option>
+                        <option value="5" data-color="#ffffff">White</option>
+                        <option value="6" data-color="#ffc0cb">Pink</option>
+                    </select>
                 </div>
               </div>
             </div>
@@ -252,6 +263,23 @@
     randomizeQuestions();
     createBangSo(14, 12, 10);
 
+    $('#colorselector').colorselector({
+        callback: function(value, color, title){
+            currentRow = parseInt(document.getElementById("id_row").value);
+            currentCol = parseInt(document.getElementById("id_col").value);
+            console.log("chosen!" + currentRow + " " + currentCol);
+            console.log(".board" + currentRow.toString() + currentCol.toString());
+            console.log(color);
+            if(isNaN(currentRow) || isNaN(currentCol)){
+                $("#questionNumber").text("Oops!");
+                $("#questionContent").text("Vui lòng chọn tọa độ hợp lệ!");
+            }
+            else{
+                $(".board" + currentRow.toString() + currentCol.toString()).css("background-color", color);
+            }
+        }
+    });
+
     // Function to display question on screen
     $("#showQuestion").click(function(event){
         currentRow = parseInt(document.getElementById("id_row").value);
@@ -261,7 +289,8 @@
             $("#questionContent").text("Vui lòng chọn tọa độ hợp lệ!");
         }
         else{
-            // Refresh UI
+            // Highlight chosen cell
+            $(".board" + currentRow.toString() + currentCol.toString()).css("background-color", "orange");
             // countDownProgressBar.css("width", "100%");
 
             currentQuestion = questionAt[currentRow - 1][currentCol - 1];
