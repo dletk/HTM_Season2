@@ -260,16 +260,27 @@
         questions = shuffle(questions);
     }
 
+    function eventBinding(){
+        var i, j;
+        for(i = 1; i <= BOARD_SIZE; i++)
+            for(j = 1; j <= BOARD_SIZE; j++){
+                let row = i.toString();
+                let col = j.toString();
+                $(".board" + row + "" + col).click(function(){
+                    $("#id_row").val(row);
+                    $("#id_col").val(col);
+                });
+            }
+    }
+
     randomizeQuestions();
     createBangSo(14, 12, 10);
+    eventBinding();
 
     $('#colorselector').colorselector({
         callback: function(value, color, title){
             currentRow = parseInt(document.getElementById("id_row").value);
             currentCol = parseInt(document.getElementById("id_col").value);
-            console.log("chosen!" + currentRow + " " + currentCol);
-            console.log(".board" + currentRow.toString() + currentCol.toString());
-            console.log(color);
             if(isNaN(currentRow) || isNaN(currentCol)){
                 $("#questionNumber").text("Oops!");
                 $("#questionContent").text("Vui lòng chọn tọa độ hợp lệ!");
