@@ -14,7 +14,7 @@ python manage.py createsuperuser
 
 Make sure you can access the admin page at `localhost:8000/admin`
 
-Run in LAN:
+To start the app in LAN, run:
 ```
 python manage.py runserver 0.0.0.0:8000
 ```
