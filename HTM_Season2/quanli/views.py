@@ -8,6 +8,7 @@ from .models import DiemThiSinh
 
 from khoidong.models import KhoiDongQuestion, KhoiDongAnswer
 from vuotsong.models import VuotSongQuestion, VuotSongAnswer
+from phanluot.models import PhanLuotQuestion, PhanLuotAnswer
 from tangtoc.models import TangTocQuestion
 from chinhphuc.models import ChinhPhucQuestion, ChinhPhucAnswer
 from userprofile.models import MyUser
@@ -15,6 +16,7 @@ from userprofile.models import MyUser
 from khoidong.forms import KhoiDongAnswerForm
 from vuotsong.forms import VuotSongAnswerForm
 from chinhphuc.forms import ChinhPhucAnswerForm
+from phanluot.forms import PhanLuotAnswerForm
 
 import json
 
@@ -28,7 +30,8 @@ acceptingAnswer = False
 FORM_CLASSES = {
                 "khoidong": KhoiDongAnswerForm,
                 "vuotsong": VuotSongAnswerForm,
-                "chinhphuc": ChinhPhucAnswerForm
+                "chinhphuc": ChinhPhucAnswerForm,
+                "phanluot": PhanLuotAnswerForm
                 }
 
 currentRinger = ""
@@ -80,7 +83,7 @@ class NewAnswer(generic.CreateView):
 
     # Handle the post method to inlcude question number and
     def post(self, request):
-        if currentRound not in ["vuotsong", "khoidong", "chinhphuc"]:
+        if currentRound not in ["vuotsong", "khoidong", "chinhphuc", "phanluot"]:
             return HttpResponseRedirect(reverse_lazy("answer"))
 
         # If currently no question is being presented, prevent thi sinh to submit answer
@@ -104,7 +107,8 @@ class NewAnswer(generic.CreateView):
                 answer.question = VuotSongQuestion.objects.get(questionID=currentQuestionID)
             elif currentRound == "chinhphuc":
                 answer.question = ChinhPhucQuestion.objects.get(questionID=currentQuestionID)
-            
+            elif currentRound == "phanluot":
+                answer.question = PhanLuotQuestion.objects.get(questionID=currentQuestionID)
         
             # Save the answer
             answer.save()
@@ -147,14 +151,18 @@ def currentQuestion(request):
             question = VuotSongQuestion.objects.get(questionID=currentQuestionID)
         elif currentRound == "chinhphuc":
             question = ChinhPhucQuestion.objects.get(questionID=currentQuestionID) 
+        elif currentRound == "phanluot":
+            question = PhanLuotQuestion.objects.get(questionID=currentQuestionID)
 
         # Get all answers for this question
         if currentRound == "khoidong":
             lastAnswer = KhoiDongAnswer.objects.filter(question=question).filter(thisinh=request.user).order_by("-id")
         elif currentRound == "vuotsong":
             lastAnswer = VuotSongAnswer.objects.filter(question=question).filter(thisinh=request.user).order_by("-id")
-        else:
+        elif currentRound == "chinhphuc":
             lastAnswer = ChinhPhucAnswer.objects.filter(question=question).filter(thisinh=request.user).order_by("-id")
+        elif currentRound == "phanluot":
+            lastAnswer = PhanLuotAnswer.objects.filter(question=question).filter(thisinh=request.user).order_by("-id")
 
         # print("***", question.values("questionText"))
         # for myiter in lastAnswer.values("answer"):
@@ -300,8 +308,10 @@ def getDapAnThiSinh(request):
     # Get all answers for this question
     if currentRound == "khoidong":
         answers = KhoiDongAnswer.objects.filter(question=question).order_by("id")
-    else:
+    elif currentRound == "vuotsong":
         answers = VuotSongAnswer.objects.filter(question=question).order_by("id")
+    else:
+        answers = PhanLuotAnswer.objects.filter(question=question).order_by("id")
 
     # Get all the id of thisinh that submit the answer
     # thisinh_id = set([thisinh["thisinh"] for thisinh in answers.values("thisinh")])
