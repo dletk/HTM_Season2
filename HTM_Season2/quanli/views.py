@@ -9,10 +9,12 @@ from .models import DiemThiSinh
 from khoidong.models import KhoiDongQuestion, KhoiDongAnswer
 from vuotsong.models import VuotSongQuestion, VuotSongAnswer
 from tangtoc.models import TangTocQuestion
+from chinhphuc.models import ChinhPhucQuestion, ChinhPhucAnswer
 from userprofile.models import MyUser
 
 from khoidong.forms import KhoiDongAnswerForm
 from vuotsong.forms import VuotSongAnswerForm
+from chinhphuc.forms import ChinhPhucAnswerForm
 
 import json
 
@@ -26,10 +28,14 @@ acceptingAnswer = False
 FORM_CLASSES = {
                 "khoidong": KhoiDongAnswerForm,
                 "vuotsong": VuotSongAnswerForm,
+                "chinhphuc": ChinhPhucAnswerForm
                 }
 
 currentRinger = ""
 allRingers = []
+
+currentNSHVer = ""
+allNSHVers = []
 
 # Create your views here.
 @login_required
@@ -74,7 +80,7 @@ class NewAnswer(generic.CreateView):
 
     # Handle the post method to inlcude question number and
     def post(self, request):
-        if currentRound not in ["vuotsong", "khoidong"]:
+        if currentRound not in ["vuotsong", "khoidong", "chinhphuc"]:
             return HttpResponseRedirect(reverse_lazy("answer"))
 
         # If currently no question is being presented, prevent thi sinh to submit answer
@@ -96,6 +102,8 @@ class NewAnswer(generic.CreateView):
                 answer.question = KhoiDongQuestion.objects.get(questionID=currentQuestionID)
             elif currentRound == "vuotsong":
                 answer.question = VuotSongQuestion.objects.get(questionID=currentQuestionID)
+            elif currentRound == "chinhphuc":
+                answer.question = ChinhPhucQuestion.objects.get(questionID=currentQuestionID)
             
         
             # Save the answer
@@ -103,12 +111,23 @@ class NewAnswer(generic.CreateView):
 
         # Return a new page for the next question
         form = self.form_class()
-        return render(request, template_name=self.template_name, context={"form": form, "answerView": True})
+        return render(request, template_name=self.template_name, context={"form": form, "answerView": True, "currentRound": currentRound})
 
     def get(self, request):
         form = self.form_class()
-        return render(request, template_name=self.template_name, context={"form": form, "answerView": True})
+        return render(request, template_name=self.template_name, context={"form": form, "answerView": True, "currentRound": currentRound})
 
+def updateRound(request):
+    global currentRound
+
+    if request.method == "POST":
+        if not request.user.is_staff:
+            return HttpResponseForbidden()
+        dataPost = request.POST
+        # Update currentRound
+        currentRound = dataPost.get("roundName")
+        return HttpResponse("currentRound updated!")
+    return HttpResponseForbidden()
 
 def currentQuestion(request):
     """
@@ -124,14 +143,18 @@ def currentQuestion(request):
         # Get the current question
         if currentRound == "khoidong":
             question = KhoiDongQuestion.objects.get(questionID=currentQuestionID)
-        else:
+        elif currentRound == "vuotsong":
             question = VuotSongQuestion.objects.get(questionID=currentQuestionID)
+        elif currentRound == "chinhphuc":
+            question = ChinhPhucQuestion.objects.get(questionID=currentQuestionID) 
 
         # Get all answers for this question
         if currentRound == "khoidong":
             lastAnswer = KhoiDongAnswer.objects.filter(question=question).filter(thisinh=request.user).order_by("-id")
-        else:
+        elif currentRound == "vuotsong":
             lastAnswer = VuotSongAnswer.objects.filter(question=question).filter(thisinh=request.user).order_by("-id")
+        else:
+            lastAnswer = ChinhPhucAnswer.objects.filter(question=question).filter(thisinh=request.user).order_by("-id")
 
         # print("***", question.values("questionText"))
         # for myiter in lastAnswer.values("answer"):
@@ -182,6 +205,7 @@ def ringBell(request):
         # The person is already ringed
         if str(request.user) in allRingers:
             return HttpResponseForbidden()
+        # Update currentRinger
         currentRinger = str(request.user)
         allRingers.append(currentRinger)
         print(currentRinger, "ringed a bell!")
@@ -204,6 +228,47 @@ def resetRingingState(request):
     else:
         return HttpResponseForbidden()
 
+def ngoiSaoHiVong(request):
+    global currentNSHVer
+    global allNSHVers
+
+    if request.method == "GET":
+        # The person is already ringed
+        if str(request.user) in allNSHVers:
+            result = {"ringerName": "luong"}
+            return JsonResponse(json.dumps(result), safe=False)
+        # Return currentRinger
+        result = {"ringerName": currentNSHVer}
+        return JsonResponse(json.dumps(result), safe=False)
+    elif request.method == "POST":
+        # Another person ringed
+        if len(currentNSHVer) > 0:
+            return HttpResponseForbidden()
+        # The person is already ringed
+        if str(request.user) in allNSHVers:
+            return HttpResponseForbidden()
+        # Update currentNSHVer
+        currentNSHVer = str(request.user)
+        allNSHVers.append(currentNSHVer)
+        print(currentRinger, " da chon NSHV!")
+        return HttpResponse("Ngoi sao hi vong!")
+
+def resetNSHVState(request):
+    """
+    Function to reset the state of the bell
+    """ 
+    global currentNSHVer
+
+    # Only POST method is allowed
+    if request.method != "POST":
+        return HttpResponseForbidden()
+
+    if request.user.is_staff:
+        # Reset by assigning currentRinger to be an empty string
+        currentNSHVer = ""
+        return HttpResponse("Already reset!")
+    else:
+        return HttpResponseForbidden()
 
 @login_required
 def beginOrStopAcceptingAnswer(request):

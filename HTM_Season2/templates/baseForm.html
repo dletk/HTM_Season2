@@ -24,9 +24,15 @@
         }
         button[type="submit"] {
             margin-top: 20px;
+            margin-right: 10px;
         }
         button[id="ringBell"]{
             margin-top: 20px;
+            margin-right: 10px;
+        }
+        button[id="ngoiSaoHiVong"]{
+            margin-top: 20px;
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -55,12 +61,22 @@
                     {% csrf_token %}
                     <button type="submit" id="submitBtn" class="btn btn-primary btn-outline-primary">Gửi</button>
                     {% if answerView %}
-                    <button id="ringBell" class="btn btn-success float-right">
-                        Bấm chuông
-                    </button>
-                    <br><br>
-                    <h5>Câu trả lời vừa gửi: </h5>
-                    <b><h5 id="thiSinhSubmission"></h5></b>
+                        
+                        {% if currentRound == "vuotsong" or currentRound == "chinhphuc" %}
+                            <button id="ringBell" class="btn btn-success" disabled="true">
+                                Bấm chuông
+                            </button>
+                        {% endif %}
+
+                        {% if currentRound == "chinhphuc" %}
+                            <button id="ngoiSaoHiVong" class="btn btn-warning float-none" disabled="true">
+                                Ngôi sao hi vọng
+                            </button>
+                        {% endif %}
+                        
+                        <br><br>
+                        <h5>Câu trả lời vừa gửi: </h5>
+                        <b><h5 id="thiSinhSubmission"></h5></b>
                     {% endif %}
                 </form>
             </span>
@@ -88,6 +104,18 @@
     function makeRingingCall(){
         $.ajax({
             url: "{% url 'ringBell' %}",
+            method: "POST",
+            data: null,
+            traditional: true,
+            success: function(data){
+                // Do nothing
+            }
+        });
+    }
+
+    function makeNSHVCall(){
+        $.ajax({
+            url: "{% url 'ngoiSaoHiVong' %}",
             method: "POST",
             data: null,
             traditional: true,
@@ -178,6 +206,42 @@
             }
         })
     }, 500);
+
+    {% if currentRound == "chinhphuc" %}
+    
+    let ngoiSaoHiVong = $("#ngoiSaoHiVong");
+
+    ngoiSaoHiVong.click(function(){
+        console.log("Đã chọn ngôi sao hi vọng!");
+        ngoiSaoHiVong.prop("disabled", true);
+        makeNSHVCall();
+    });
+
+    // Make AJAX calls to check for ngoiSaoHiVong state
+    setInterval(function() {
+        $.ajax({
+            url: "{% url 'ngoiSaoHiVong' %}",
+            method: "GET",
+            success: function(data) {
+                data = JSON.parse(data);
+                if(data.ringerName.length == 0){
+                    if(ngoiSaoHiVong.prop("disabled")){
+                        ngoiSaoHiVong.prop("disabled", false);
+                    }
+                }
+                else{
+                    if(ngoiSaoHiVong.prop("disabled")){
+                    }
+                    else{
+                        ngoiSaoHiVong.prop("disabled", true)
+                    }
+                }
+            }
+        })
+    }, 500);
+
+    {% endif %}
+
     {% endif %}
 
 </script>

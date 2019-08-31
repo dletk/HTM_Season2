@@ -311,6 +311,20 @@ $.ajaxSetup({
     }
 });
 
+function updateRound(roundName){
+    $.ajax({
+        url: "{% url 'updateRound' %}",
+        method: "POST",
+        data: {"roundName": roundName},
+        traditional: true,
+        success: function(data){
+            // do nothing
+        }
+    });
+}
+
+updateRound("vuotsong");
+
 
 function makeAjaxCall(questionContent, currentQuestionID) {
     // Make the AJAX call to notify the current question to the server and other screen of contestant

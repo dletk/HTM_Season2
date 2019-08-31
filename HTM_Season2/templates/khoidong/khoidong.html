@@ -19,7 +19,7 @@
         #questionAnswer{
             font-size: 30px;
         }
-        .questionNumber, #nextQuestion {
+        .questionNumber {
             margin-top: 0.1em;
         }
         .questionNumber {
@@ -96,6 +96,20 @@
             }
         }
     });
+
+    function updateRound(roundName){
+        $.ajax({
+            url: "{% url 'updateRound' %}",
+            method: "POST",
+            data: {"roundName": roundName},
+            traditional: true,
+            success: function(data){
+                // do nothing
+            }
+        });
+    }
+
+    updateRound("khoidong");
 
 
     function makeAjaxCall(questionContent, currentQuestionID) {

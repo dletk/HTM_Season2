@@ -6,7 +6,7 @@
 
     table{
         width: 490px;
-        margin-top: 2em;
+        margin-top: 9em;
     }
 
     td{
@@ -85,12 +85,12 @@
 <div class="container-fluid">
     <div class="row">
 
-        <div class="col-8">
+        <div class="col-7">
             <table border="1" id="gomoku">
             </table>
         </div>
 
-        <div class="col-4">
+        <div class="col-5">
 
             <div class="row">
                 <div class="col-sm-12">
@@ -143,9 +143,59 @@
     </div> 
 </div>
 
+<div id="ngoiSaoHiVongDialog" title="NGÔI SAO HI VỌNG">
+    <center>
+        <p id="ngoiSaoHiVongContent">Noi dung thong bao</p>
+        <button class="btn btn-success" id="resetNSHVBtn">OK</button>
+    </center>
+</div>
+
+{% csrf_token %}
 {% endblock %}
 {% block scripts %}
 <script>
+
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    function updateRound(roundName){
+        $.ajax({
+            url: "{% url 'updateRound' %}",
+            method: "POST",
+            data: {"roundName": roundName},
+            traditional: true,
+            success: function(data){
+                // do nothing
+            }
+        });
+    }
+
+    updateRound("chinhphuc");    
+
+    function makeAjaxCall(questionContent, currentQuestionID) {
+        // Make the AJAX call to notify the current question to the server and other screen of contestant
+        $.ajax({
+            url: "{% url 'currentQuestion'%}",
+            method: "POST",
+            data: {"question":questionContent, "questionID":currentQuestionID, "round": "chinhphuc"},
+            dataType: "json",
+            traditional: true,
+            success: function (data) {
+                // Do nothing
+            }
+        });
+    }
+
     // Board size
     const BOARD_SIZE = 6;
 
@@ -156,6 +206,8 @@
     let questions = {{ questions|safe }};
 
     console.log(questions);
+
+    var currentQuestionID = 1;
 
     function randInt(low, high){
         randLow = Math.floor(Math.random() * 1000000) % (high-low+1);
@@ -248,14 +300,14 @@
     }
 
     function randomizeQuestions(){
-        questions = [];
+        // questions = [];
         var i;
+        for(i = 0; i < 12; i++)
+            questions.push({questionID: 1, questionText: "Who has impressed you most with what they’ve accomplished?", answer: "luong", difficulty: "easy"});
         for(i = 0; i < 20; i++)
-            questions.push({questionText: "Who has impressed you most with what they’ve accomplished?", answer: "luong", difficulty: "easy"});
+            questions.push({questionID: 1, questionText: "What are you interested in that most people haven’t heard of?", answer: "salary", difficulty: "medium"});
         for(i = 0; i < 20; i++)
-            questions.push({questionText: "What are you interested in that most people haven’t heard of?", answer: "salary", difficulty: "medium"});
-        for(i = 0; i < 20; i++)
-            questions.push({questionText: "What could you give a 40-minute presentation on with absolutely no preparation?", answer: "liang", difficulty: "hard"});
+            questions.push({questionID: 1, questionText: "What could you give a 40-minute presentation on with absolutely no preparation?", answer: "liang", difficulty: "hard"});
         questions = shuffle(questions);
     }
 
@@ -306,10 +358,15 @@
             // countDownProgressBar.css("width", "100%");
 
             currentQuestion = questionAt[currentRow - 1][currentCol - 1];
+
             questionContent = currentQuestion["questionText"];
+            currentQuestionID = currentQuestion["questionID"];
 
             let questionFileType = currentQuestion["fileType"];
             let questionFile = currentQuestion["file"];
+
+            makeAjaxCall(questionContent, currentQuestionID);
+
             let fileDisplay = $("#questionFile");
             fileDisplay.empty();
 
@@ -350,6 +407,53 @@
             $("#questionAnswer").text("Đáp án: " + questionAnswer);
         }
     });
+
+    ngoiSaoHiVongDialog = $("#ngoiSaoHiVongDialog");
+
+    ngoiSaoHiVongDialog.dialog({
+        modal: true,
+        autoOpen: false
+    });
+
+    $("#resetNSHVBtn").click(function(){
+        $.ajax({
+            url: "{% url 'resetNSHVState' %}",
+            method: "POST",
+            traditional: true,
+            success: function(data){
+                ngoiSaoHiVongDialog.dialog('close');
+            }
+        });
+    });
+
+    // Function to wait for the NgoiSaoHiVong
+    setInterval(function() {
+        $.ajax({
+            url: "{% url 'ngoiSaoHiVong' %}",
+            method: "GET",
+            success: function(data) {
+                data = JSON.parse(data);
+                var ringerName = data.ringerName;
+                // no one ringed the bell
+                if(ringerName.length == 0){ 
+                  return null;
+                }
+                // check the ringingDialog
+                if(ngoiSaoHiVongDialog.dialog("isOpen")){
+                  // already open
+                }
+                else{
+                  // the dialog has not been opened yet
+
+                  // make a sound
+                  var bell_sound = new Audio("{% static 'vuotsong/bellsound.mp3' %}");
+                  bell_sound.play();
+                  $("#ngoiSaoHiVongContent").text(ringerName + " đã chọn ngôi sao hi vọng!");
+                  ngoiSaoHiVongDialog.dialog("open");
+                }
+            }
+        })
+    }, 250);
 
 </script>
 {% endblock %}
