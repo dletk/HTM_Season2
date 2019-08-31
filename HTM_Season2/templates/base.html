@@ -36,7 +36,7 @@
 
 <body>
     <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'home' %}">Hành trình Magellan</a>
+        <a class="navbar-brand" href="{% url 'home' %}">Trang chủ</a>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
             aria-expanded="false" aria-label="Toggle navigation">
@@ -49,21 +49,34 @@
                     <a class="nav-link btn btn-outline-danger" >Reset</a>
                 </li> -->
                 <li class="nav-item">
-                    <a class="nav-link btn btn-outline-primary" href="{% url 'score' %}">Điểm số</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link btn btn-outline-success" href="{% url 'khoidong' %}">Nhổ neo</a>
+                    <a class="nav-link btn btn-sm btn-outline-primary" href="{% url 'score' %}">Điểm số</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link btn btn-outline-warning" href="{% url 'vuotsong' %}">
+                    <a class="nav-link btn btn-sm btn-outline-info dropdown-toggle" href="#" id="showRules" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Luật chơi</a>
+                    <div class="dropdown-menu" aria-labelledby="showRules">
+                        <a class="nav-link btn btn-sm btn-outline-secondary nhoNeoRule" style="margin:3px" href="#">Nhổ neo</a>
+                        <a class="nav-link btn btn-sm btn-outline-info vuotSongRule" style="margin:3px" href="#">Vượt sóng</a>
+                        <a class="nav-link btn btn-sm btn-outline-warning butPhaRule" style="margin:3px" href="#">Bứt phá</a>
+                        <a class="nav-link btn btn-sm btn-outline-success chinhPhucRule" style="margin:3px" href="#">Chinh phục</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-sm btn-outline-success" href="{% url 'khoidong' %}">Nhổ neo</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link btn btn-sm btn-outline-warning" href="{% url 'vuotsong' %}">
                         Vượt sóng
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link btn btn-outline-danger" href="{% url 'tangtoc' %}">Bứt phá</a>
+                    <a class="nav-link btn btn-sm btn-outline-danger" href="{% url 'tangtoc' %}">Bứt phá</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link btn btn-outline-info" href="{% url 'chinhphuc' %}">Chinh phục</a>
+                    <a class="nav-link btn btn-sm btn-outline-info" href="{% url 'chinhphuc' %}">Chinh phục</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-sm btn-outline-success" href="">Phân lượt</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
@@ -93,6 +106,31 @@
             {% endblock %}
         </div>
     </div>
+
+    <div id="nhoNeoRuleDialog" title="NHỔ NEO" class="ruleDialog">
+        <p id="nhoNeoRuleContent" style="font-size: 24px; text-align: justify;">Tất cả các thí sinh trả lời 12 câu hỏi hình ảnh, audio hoặc video, mỗi câu hỏi trong vòng 15s. Thí sinh trả lời đúng và nhanh nhất được 15 điểm, những thí sinh khác trả lời đúng được 10 điểm.</p>
+        <center>
+            <button class="btn btn-success closeDialogBtn">Đóng</button>
+        </center>
+    </div>
+
+    <div id="chinhPhucRuleDialog" title="CHINH PHỤC" class="ruleDialog">
+        <p id="chinhPhucRuleContent" style="font-size: 24px; text-align: justify;">
+            - Các thí sinh tiếp tục giành lượt đi trước bằng câu hỏi phân lượt.
+            <br>
+            - Sẽ có một bảng số gồm 6*6 ô vuông gồm các ô vuông trống, ô vuông chấm than và ô vuông chấm hỏi với các mức điểm tương ứng lần lượt là 10, 20, 30.
+            <br> 
+            - Mỗi thí sinh tới lượt mình chọn một ô và trả lời câu hỏi, đúng được tô màu vào ô đó. Sai các thí sinh khác ấn chuông giành quyền trả lời sau hiệu lệnh của MC. Trả lời đúng được tô màu của mình vào ô đó và lấy đi số điểm của câu hỏi từ người chọn . Sai sẽ bị trừ một nửa số điểm của câu hỏi .
+            <br> 
+            - Mỗi thí sinh có quyền đặt ngôi sao hy vọng vào bất kỳ lúc nào ( chỉ được đặt một lần ). Trả lời đúng câu hỏi có NSHV được thêm số điểm câu hỏi và được chọn thêm một ô nữa để trả lời, trả lời sai bị trừ số điểm bằng số điểm của câu hỏi. 
+            <br>
+            - Mỗi thí có 4 lượt chơi và nếu có một thí sinh tạo được một đường ngang dọc hoặc chéo với 4 ô màu của mình liên tiếp thì sẽ được cộng thêm 50 điểm. Mỗi thí sinh chỉ được + 50 điểm một lần.
+        </p>
+        <center>
+            <button class="btn btn-success closeDialogBtn">Đóng</button>
+        </center>
+    </div>
+
 </body>
 
 <footer class="page-footer">
@@ -115,6 +153,47 @@
     $("#toggleNavbar").click(function(){
         $("#mainNavbar").toggle();
     });
+
+    $(".closeDialogBtn").click(function(){
+        $(".ruleDialog").dialog("close");
+    });
+
+    nhoNeoRuleDialog = $("#nhoNeoRuleDialog");
+
+    nhoNeoRuleDialog.dialog({
+        modal: true,
+        autoOpen: false,
+        minWidth: 600,
+    });
+
+    $(".nhoNeoRule").click(function(){
+        if(nhoNeoRuleDialog.dialog("isOpen")){
+            // already open
+        }
+        else{
+            // the dialog has not been opened yet
+            nhoNeoRuleDialog.dialog("open");
+        }
+    });
+
+    chinhPhucRuleDialog = $("#chinhPhucRuleDialog");
+
+    chinhPhucRuleDialog.dialog({
+        modal: true,
+        autoOpen: false,
+        minWidth: 900,
+    });
+
+    $(".chinhPhucRule").click(function(){
+        if(chinhPhucRuleDialog.dialog("isOpen")){
+            // already open
+        }
+        else{
+            // the dialog has not been opened yet
+            chinhPhucRuleDialog.dialog("open");
+        }
+    });
+
 </script>
 {% block scripts %}
 {% endblock %}
