@@ -944,5 +944,13 @@ $("#showDapAnThiSinh").click(function () {
   $("#dapAnThiSinh").show();
 });
 
+$(".posCell").click(function(){
+  var idx_ochu = $(this).find("span").text();
+  $("#id_ochu").val(idx_ochu);
+  $("#questionNumber").text("Hàng số " + idx_ochu.toString());
+  // Remove previous questionsContent
+  $("#questionContent").text("");
+});
+
 </script>
 {% endblock %}
