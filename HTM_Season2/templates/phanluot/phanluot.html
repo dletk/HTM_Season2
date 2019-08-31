@@ -192,7 +192,7 @@
 
     $("#nextQuestion").click(function(event) {
         $("#questionAnswer").text("");
-        if (currentQuestionID >= 1) {
+        if (currentQuestionID >= 2) {
             $("#questionContent").text("Kết thúc phần thi");
         } else {
             let currentQuestion = questions;
@@ -215,7 +215,7 @@
     });
 
     $("#showAnswer").click(function(event){
-        if (currentQuestionID <= 0 || currentQuestionID > 1){
+        if (currentQuestionID <= 0 || currentQuestionID > 2){
             $("#questionAnswer").text("...");
         } else {
             let currentQuestion = questions;
