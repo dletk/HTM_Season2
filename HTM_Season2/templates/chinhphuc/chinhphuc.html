@@ -304,9 +304,9 @@
         var i;
         for(i = 0; i < 12; i++)
             questions.push({questionID: 1, questionText: "Who has impressed you most with what they’ve accomplished?", answer: "luong", difficulty: "easy"});
-        for(i = 0; i < 20; i++)
+        for(i = 0; i < 10; i++)
             questions.push({questionID: 1, questionText: "What are you interested in that most people haven’t heard of?", answer: "salary", difficulty: "medium"});
-        for(i = 0; i < 20; i++)
+        for(i = 0; i < 8; i++)
             questions.push({questionID: 1, questionText: "What could you give a 40-minute presentation on with absolutely no preparation?", answer: "liang", difficulty: "hard"});
         questions = shuffle(questions);
     }
@@ -320,6 +320,11 @@
                 $(".board" + row + "" + col).click(function(){
                     $("#id_row").val(row);
                     $("#id_col").val(col);
+
+                    // Remove previous question and answer
+                    $("#questionNumber").text("Hàng số "+ row + ", cột số " + col);
+                    $("#questionContent").text("");
+                    $("#questionAnswer").text("");
                 });
             }
     }
@@ -346,6 +351,9 @@
 
     // Function to display question on screen
     $("#showQuestion").click(function(event){
+        // Remove previous answer
+        $("#questionAnswer").text("");
+
         currentRow = parseInt(document.getElementById("id_row").value);
         currentCol = parseInt(document.getElementById("id_col").value);
         if(isNaN(currentRow) || isNaN(currentCol)){
