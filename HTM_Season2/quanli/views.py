@@ -302,8 +302,10 @@ def getDapAnThiSinh(request):
     # Get the current question
     if currentRound == "khoidong":
         question = KhoiDongQuestion.objects.get(questionID=currentQuestionID)
-    else:
+    elif currentRound == "vuotsong":
         question = VuotSongQuestion.objects.get(questionID=currentQuestionID)
+    else:
+        question = PhanLuotQuestion.objects.get(questionID=currentQuestionID)
 
     # Get all answers for this question
     if currentRound == "khoidong":

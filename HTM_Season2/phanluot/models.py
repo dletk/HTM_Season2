@@ -30,7 +30,7 @@ class PhanLuotQuestion(models.Model):
         max_length=256, blank=False, verbose_name="Đáp án")
 
     def __str__(self):
-        return "Khởi động: Câu hỏi {}".format(self.questionID)
+        return "Phân lượt: Câu hỏi {}".format(self.questionID)
 
 
 class PhanLuotAnswer(models.Model):

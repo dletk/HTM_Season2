@@ -47,7 +47,7 @@ def getFirstQuestion(request):
 
     questions = [toDict(question) for question in PhanLuotQuestion.objects.all().order_by("questionID")][0]
 
-    return render(request, template_name="phanluot/phanluot.html", context=dict(questions=questions))
+    return render(request, template_name="phanluot/phanluot.html", context=dict(questions=questions, questID=0))
 
 @login_required
 def getSecondQuestion(request):
@@ -60,4 +60,4 @@ def getSecondQuestion(request):
 
     questions = [toDict(question) for question in PhanLuotQuestion.objects.all().order_by("questionID")][1]
 
-    return render(request, template_name="phanluot/phanluot.html", context=dict(questions=questions))
+    return render(request, template_name="phanluot/phanluot.html", context=dict(questions=questions, questID=1))
