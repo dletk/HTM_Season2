@@ -188,7 +188,7 @@
     // Store all questions in an array
     let questions = {{ questions|safe }};
 
-    var currentQuestionID = questID;
+    var currentQuestionID = {{ questID|safe }};
 
     $("#nextQuestion").click(function(event) {
         $("#questionAnswer").text("");
