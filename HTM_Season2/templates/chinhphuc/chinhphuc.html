@@ -260,6 +260,9 @@
         easy_questions = [];
         medium_questions = [];
         hard_questions = [];
+
+        questions = shuffle(questions);
+
         var i, j;
         for(i = 0; i < questions.length; i++){
             if(questions[i].difficulty == "easy"){
@@ -405,7 +408,7 @@
             }
     }
 
-    // randomizeQuestions();
+    randomizeQuestions();
     createBangSo(14, 12, 10);
     eventBinding();
 
