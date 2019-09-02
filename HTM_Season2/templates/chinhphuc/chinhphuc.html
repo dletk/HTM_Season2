@@ -228,6 +228,7 @@
     console.log(questions);
 
     var currentQuestionID = 1;
+    var questionAnswer = "";
 
     function randInt(low, high){
         randLow = Math.floor(Math.random() * 1000000) % (high-low+1);
@@ -458,6 +459,7 @@
 
             questionContent = currentQuestion["questionText"];
             currentQuestionID = currentQuestion["questionID"];
+            questionAnswer = currentQuestion["answer"];
 
             let questionFileType = currentQuestion["fileType"];
             let questionFile = currentQuestion["file"];
@@ -496,9 +498,6 @@
         }
         else{
             var congratAudio = new Audio("{% static 'chinhphuc/VeDichCauDung.mp3' %}");congratAudio.play();
-
-            currentQuestion = getQuestionAt(currentRow - 1, currentCol - 1);
-            let questionAnswer = currentQuestion["answer"];
 
             $("#questionAnswer").text("Đáp án: " + questionAnswer);
         }
