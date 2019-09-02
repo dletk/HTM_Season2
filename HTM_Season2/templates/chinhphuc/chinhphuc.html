@@ -217,6 +217,11 @@
     var selectedRow = 0;
     var selectedCol = 0;
 
+    // Initialize questions list
+    var easy_questions = [];
+    var medium_questions = [];
+    var hard_questions = [];
+
     // Store all questions in an array
     let questions = {{ questions|safe }};
 
@@ -256,12 +261,18 @@
         return newList;
     }
 
+    function getQuestionAt(row, col){
+        if(questionAt[row][col] == "easy")
+            return easy_questions.pop();
+        if(questionAt[row][col] == "medium")
+            return medium_questions.pop();
+        return hard_questions.pop(); 
+    }
+
     function createBangSo(nEasy, nMedium, nHard){
         easy_questions = [];
         medium_questions = [];
         hard_questions = [];
-
-        questions = shuffle(questions);
 
         var i, j;
         for(i = 0; i < questions.length; i++){
@@ -296,16 +307,16 @@
                 htmlContent += '<td><div class="cellContent board' + i.toString() + j.toString() + '">';
                 let randVal = randInt(1, nEasy+nMedium+nHard);
                 if(randVal <= nEasy){
-                    questionAt[i - 1].push(easy_questions.pop());
+                    questionAt[i - 1].push("easy");
                     nEasy -= 1;
                 }
                 else if (randVal <= nEasy + nMedium){
-                    questionAt[i - 1].push(medium_questions.pop());
+                    questionAt[i - 1].push("medium");
                     nMedium -= 1;
                     htmlContent += '!';
                 }
                 else{
-                    questionAt[i - 1].push(hard_questions.pop());
+                    questionAt[i - 1].push("hard");
                     nHard -= 1;
                     htmlContent += '?';
                 }
@@ -409,7 +420,7 @@
             }
     }
 
-    randomizeQuestions();
+    // randomizeQuestions();
     createBangSo(14, 12, 10);
     eventBinding();
 
@@ -443,7 +454,7 @@
         else{
             resetQuestionContent(currentRow, currentCol);
 
-            currentQuestion = questionAt[currentRow - 1][currentCol - 1];
+            currentQuestion = getQuestionAt(currentRow - 1, currentCol - 1);
 
             questionContent = currentQuestion["questionText"];
             currentQuestionID = currentQuestion["questionID"];
@@ -486,7 +497,7 @@
         else{
             var congratAudio = new Audio("{% static 'chinhphuc/VeDichCauDung.mp3' %}");congratAudio.play();
 
-            currentQuestion = questionAt[currentRow - 1][currentCol - 1];
+            currentQuestion = getQuestionAt(currentRow - 1, currentCol - 1);
             let questionAnswer = currentQuestion["answer"];
 
             $("#questionAnswer").text("Đáp án: " + questionAnswer);
