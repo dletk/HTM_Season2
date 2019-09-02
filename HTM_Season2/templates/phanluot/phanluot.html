@@ -218,6 +218,9 @@
         if (currentQuestionID <= 0 || currentQuestionID > 2){
             $("#questionAnswer").text("...");
         } else {
+            var showAnswerAudio =  new Audio("{% static 'chinhphuc/VeDichCauDung.mp3' %}");
+            showAnswerAudio.play();
+
             let currentQuestion = questions;
             let questionAnswer = currentQuestion["answer"];
             $("#questionAnswer").text("Đáp án: " + questionAnswer);
