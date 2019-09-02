@@ -46,13 +46,15 @@ def toDict(question: ChinhPhucQuestion):
     Helper method to convert a question to JSON format
     """
     if question.file:
-        return dict(questionText=question.questionText,
+        return dict(questionID=question.questionID,
+                    questionText=question.questionText,
                     file=question.file.url,
                     answer=question.answer,
                     difficulty=question.difficulty,
                     fileType=getFileType(question.file.url))
     else:
-        return dict(questionText=question.questionText, 
+        return dict(questionID=question.questionID,
+                    questionText=question.questionText, 
                     answer=question.answer,
                     difficulty=question.difficulty)
 
