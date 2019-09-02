@@ -327,6 +327,11 @@
         }
 
         $("#gomoku").html(htmlContent);
+
+        // reverse the question lists
+        easy_questions = easy_questions.reverse();
+        medium_questions = medium_questions.reverse();
+        hard_questions = hard_questions.reverse();
     }
 
     function randomizeQuestions(){
