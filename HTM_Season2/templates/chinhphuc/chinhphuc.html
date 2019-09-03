@@ -230,7 +230,7 @@
     var hard_questions = [];
 
     // Intialize media files
-    var demgioBamChuong =  new Audio("{% static 'chinhphuc/ChinhPhuc_BamChuong.mp3' %}");
+    var demgioBamChuong =  new Audio("{% static 'chinhphuc/VeDich5sConLai.mp3' %}");
 
     // Store all questions in an array
     let questions = {{ questions|safe }};
@@ -382,7 +382,7 @@
     let bamChuongCountDownProgressBar = $("#bamChuongCountDownProgressBar");
 
     bamChuongCountDownProgressBar.click(function(){
-        demgioBamChuong =  new Audio("{% static 'chinhphuc/ChinhPhuc_BamChuong.mp3' %}");
+        demgioBamChuong =  new Audio("{% static 'chinhphuc/VeDich5sConLai.mp3' %}");
         demgioBamChuong.play();
         // Start accepting gianhQuyen
         sendSignalGQ(true);
@@ -584,7 +584,7 @@
                     // the dialog has not been opened yet
 
                     // make a sound
-                    var bell_sound = new Audio("{% static 'chinhphuc/VeDichNSHV.mp3' %}");
+                    var bell_sound = new Audio("{% static 'chinhphuc/ChinhPhuc_BamChuong.mp3' %}");
                     bell_sound.play();
                     $("#gianhQuyenContent").text(gianhQuyenUser + " đã nhấn chuông giành quyền trả lời!");
                     gianhQuyenDialog.dialog("open");
