@@ -69,6 +69,10 @@ body{
     margin-bottom: 0;
     color: red;
 }
+.chuongNgaiVat{
+  font-size: 28px;
+  background-color: bisque;
+}
 
 .label_chonochu{
   font-size: 21px;
@@ -218,6 +222,7 @@ body{
         <button class="btn btn-info btn-md crossword_btn" id="showQuestion">Câu hỏi</button>
         <button class="btn btn-success btn-md crossword_btn" id="showAnswer">Đúng</button>
         <button class="btn btn-danger btn-md crossword_btn" id="wrongAnswer">Sai</button>
+        <button class="btn btn-warning btn-md crossword_btn" id="showAllAnswers">Đúng CNV</button>
         </div>
       </div>
     </div>
@@ -240,6 +245,18 @@ body{
               </div>
           </div>
       </div>
+    </div>
+
+    <div class="row">
+
+      <div class="col-sm-12">
+          <div class="row">
+              <div class="col-sm-12">
+                  <p class="chuongNgaiVat"><span id="chuongNgaiVat"></span></p>
+              </div>
+          </div>
+      </div>
+
     </div>
 
 <!--       <div class="col-sm-2" id="manageAnswer">
@@ -348,6 +365,7 @@ console.log(questions)
 var currentQuestionID = 10;
 var questionContent = ""
 var challengeAnswer;
+var chuongNgaiVatContent;
 
 //---------------------------------//
 //   GLOBAL VARIABLES              //
@@ -433,6 +451,7 @@ function GetWordsFromInput(){
     wordArr.push(currentAnswer);
   }
   challengeAnswer = wordArr[wordArr.length - 1];
+  chuongNgaiVatContent = challengeAnswer;
   wordArr.pop();
   // wordArr = ["DANANG", "TAMKY", "GIALAI", "LONGAN"];  
   // for(var i=0,val,w=document.getElementsByClassName("word");i<w.length;i++){
@@ -889,6 +908,15 @@ $("#showAnswer").click(function(event){
     $(".letterOf" + currentQuestionID.toString() + " span").show();
   }
   $(".letter.redLetter").css("background-color", "green");
+});
+
+$("#showAllAnswers").click(function(event){
+  var showAllSoundtrack = new Audio("{% static 'vuotsong/VCNV_cau_dung.mp3' %}");
+  showAllSoundtrack.play();
+
+  $(".letter").css("background-color", "rgb(255,255,255)");
+  $(".letter span").show();
+  $("#chuongNgaiVat").html("<i>Chướng ngại vật: <b>" + chuongNgaiVatContent + "</b></i>");
 });
 
 $("#wrongAnswer").click(function(event){
