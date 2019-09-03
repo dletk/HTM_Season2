@@ -23,10 +23,15 @@
             font-style: italic;
         }
         button[type="submit"] {
+            display: inline-block;
             margin-top: 20px;
             margin-right: 10px;
         }
         button[id="ringBell"]{
+            margin-top: 20px;
+            margin-right: 10px;
+        }
+        button[id="gianhQuyen"]{
             margin-top: 20px;
             margin-right: 10px;
         }
@@ -59,26 +64,37 @@
                 <form method="POST" enctype="multipart/form-data">
                     {{ form.as_p }}
                     {% csrf_token %}
-                    <button type="submit" id="submitBtn" class="btn btn-primary btn-outline-primary">Gửi</button>
-                    {% if answerView %}
-                        
-                        {% if currentRound == "vuotsong" or currentRound == "chinhphuc" %}
+                    <center>
+                        <button type="submit" id="submitBtn" class="btn btn-lg btn-primary btn-outline-primary">Gửi</button>
+                    </center>
+                </form>
+                <br>
+
+                {% if answerView %}
+                    <center>
+                    
+                        {% if currentRound == "vuotsong" %}
                             <button id="ringBell" class="btn btn-success" disabled="true">
                                 Bấm chuông
                             </button>
                         {% endif %}
 
                         {% if currentRound == "chinhphuc" %}
+                            <button id="gianhQuyen" class="btn btn-success" disabled="true">
+                                Giành quyền trả lời
+                            </button>
                             <button id="ngoiSaoHiVong" class="btn btn-warning float-none" disabled="true">
                                 Ngôi sao hi vọng
                             </button>
                         {% endif %}
                         
-                        <br><br>
-                        <h5>Câu trả lời vừa gửi: </h5>
-                        <b><h5 id="thiSinhSubmission"></h5></b>
-                    {% endif %}
-                </form>
+                    </center>
+                    
+                    <br><br>
+                    <h5>Câu trả lời vừa gửi: </h5>
+                    <b><h5 id="thiSinhSubmission"></h5></b>
+                {% endif %}
+         
             </span>
         </div>
     </div>
@@ -116,6 +132,18 @@
     function makeNSHVCall(){
         $.ajax({
             url: "{% url 'ngoiSaoHiVong' %}",
+            method: "POST",
+            data: null,
+            traditional: true,
+            success: function(data){
+                // Do nothing
+            }
+        });
+    }
+
+    function makeGianhQuyenCall(){
+        $.ajax({
+            url: "{% url 'gianhQuyen' %}",
             method: "POST",
             data: null,
             traditional: true,
@@ -173,6 +201,9 @@
             }
         })
     }, 500);
+    {% endif %}
+
+    {% if currentRound == "vuotsong" %}
 
     // Handle the ringBell event
 
@@ -180,7 +211,7 @@
 
     ringBtn.click(function(){
         console.log("Đã bấm chuông!");
-        ringBtn.prop("disabled", true);
+        // ringBtn.prop("disabled", true);
         makeRingingCall();
     });
 
@@ -207,13 +238,46 @@
         })
     }, 500);
 
+    {% endif %}
+
     {% if currentRound == "chinhphuc" %}
+
+    let gianhQuyen = $("#gianhQuyen");
+
+    gianhQuyen.click(function(){
+        console.log("Đã giành quyền trả lời!");
+        // gianhQuyen.prop("disabled", true);
+        makeGianhQuyenCall();
+    });
+
+    // Make AJAX calls to check for ngoiSaoHiVong state
+    setInterval(function() {
+        $.ajax({
+            url: "{% url 'gianhQuyen' %}",
+            method: "GET",
+            success: function(data) {
+                data = JSON.parse(data);
+                if(data.gianhQuyenUser.length == 0){
+                    if(gianhQuyen.prop("disabled")){
+                        gianhQuyen.prop("disabled", false);
+                    }
+                }
+                else{
+                    if(gianhQuyen.prop("disabled")){
+                    }
+                    else{
+                        gianhQuyen.prop("disabled", true)
+                    }
+                }
+            }
+        })
+    }, 250);
     
     let ngoiSaoHiVong = $("#ngoiSaoHiVong");
 
     ngoiSaoHiVong.click(function(){
         console.log("Đã chọn ngôi sao hi vọng!");
-        ngoiSaoHiVong.prop("disabled", true);
+        // ngoiSaoHiVong.prop("disabled", true);
         makeNSHVCall();
     });
 
@@ -239,8 +303,6 @@
             }
         })
     }, 500);
-
-    {% endif %}
 
     {% endif %}
 

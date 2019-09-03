@@ -156,6 +156,13 @@
     </div> 
 </div>
 
+<div id="gianhQuyenDialog" title="GIÀNH QUYỀN">
+    <center>
+        <p id="gianhQuyenContent">Noi dung thong bao</p>
+        <button class="btn btn-success" id="resetGQBtn">OK</button>
+    </center>
+</div>
+
 <div id="ngoiSaoHiVongDialog" title="NGÔI SAO HI VỌNG">
     <center>
         <p id="ngoiSaoHiVongContent">Noi dung thong bao</p>
@@ -221,6 +228,9 @@
     var easy_questions = [];
     var medium_questions = [];
     var hard_questions = [];
+
+    // Intialize media files
+    var demgioBamChuong =  new Audio("{% static 'chinhphuc/VeDich5sConLai.mp3' %}");
 
     // Store all questions in an array
     let questions = {{ questions|safe }};
@@ -372,8 +382,10 @@
     let bamChuongCountDownProgressBar = $("#bamChuongCountDownProgressBar");
 
     bamChuongCountDownProgressBar.click(function(){
-        var demgio =  new Audio("{% static 'chinhphuc/VeDich5sConLai.mp3' %}");
-        demgio.play();
+        demgioBamChuong =  new Audio("{% static 'chinhphuc/VeDich5sConLai.mp3' %}");
+        demgioBamChuong.play();
+        // Start accepting gianhQuyen
+        sendSignalGQ(true);
 
         // Countdown 15s
         var countDownInterval = null;
@@ -385,7 +397,9 @@
             if (remainingTime >= 0) {
                 bamChuongCountDownProgressBar.css("width", (remainingTime*25 / totalTime) + "%");
             } else {
-              clearInterval(countDownInterval);
+                // Stop accepting gianhQuyen
+                sendSignalGQ(false);
+                clearInterval(countDownInterval);
             }
         }, 50);
 
@@ -508,6 +522,65 @@
         }
     });
 
+    function sendSignalGQ(isBegin){
+        var destURL = "{% url 'stopAcceptingGQ' %}";
+        if(isBegin)
+            destURL = "{% url 'beginAcceptingGQ' %}";
+        $.ajax({
+            url: destURL,
+            method: "POST",
+            traditional: true,
+            success: function(data){
+                // do nothing
+            }
+        });        
+    }
+
+    gianhQuyenDialog = $("#gianhQuyenDialog");
+
+    gianhQuyenDialog.dialog({
+        modal: true,
+        autoOpen: false
+    });
+
+    $("#resetGQBtn").click(function(){
+        sendSignalGQ(false);
+        gianhQuyenDialog.dialog('close');
+    });
+
+    // Function to wait for the GianhQuyen
+    setInterval(function() {
+        $.ajax({
+            url: "{% url 'gianhQuyen' %}",
+            method: "GET",
+            success: function(data) {
+                data = JSON.parse(data);
+                var gianhQuyenUser = data.gianhQuyenUser;
+                var acceptingGQ = data.acceptingGQ;
+                if(!acceptingGQ) return 0;
+                // no one ringed the bell
+                if(gianhQuyenUser.length == 0){ 
+                    return null;
+                }
+                // stop countdown audio
+                demgioBamChuong.pause();
+                // check the ringingDialog
+                if(gianhQuyenDialog.dialog("isOpen")){
+                    // already open
+                }
+                else{
+                    // the dialog has not been opened yet
+
+                    // make a sound
+                    var bell_sound = new Audio("{% static 'chinhphuc/VeDichNSHV.mp3' %}");
+                    bell_sound.play();
+                    $("#gianhQuyenContent").text(gianhQuyenUser + " đã nhấn chuông giành quyền trả lời!");
+                    gianhQuyenDialog.dialog("open");
+                }
+            }
+        })
+    }, 250);    
+
     ngoiSaoHiVongDialog = $("#ngoiSaoHiVongDialog");
 
     ngoiSaoHiVongDialog.dialog({
@@ -525,6 +598,7 @@
             }
         });
     });
+
 
     // Function to wait for the NgoiSaoHiVong
     setInterval(function() {

@@ -26,6 +26,9 @@ currentRound = "khoidong"
 
 acceptingAnswer = False
 
+acceptingGQ = False
+gianhQuyenUser = ""
+
 # TODO: Add form classes for other rounds here
 FORM_CLASSES = {
                 "khoidong": KhoiDongAnswerForm,
@@ -121,6 +124,7 @@ class NewAnswer(generic.CreateView):
         form = self.form_class()
         return render(request, template_name=self.template_name, context={"form": form, "answerView": True, "currentRound": currentRound})
 
+@login_required
 def updateRound(request):
     global currentRound
 
@@ -187,6 +191,7 @@ def currentQuestion(request):
         else:
             return HttpResponseForbidden()
 
+@login_required
 def ringBell(request):
     """
     Function to handle the request for retrieve or updating current ringer
@@ -219,6 +224,7 @@ def ringBell(request):
         print(currentRinger, "ringed a bell!")
         return HttpResponse("Ringed!")
 
+@login_required
 def resetRingingState(request):
     """
     Function to reset the state of the bell
@@ -236,6 +242,7 @@ def resetRingingState(request):
     else:
         return HttpResponseForbidden()
 
+@login_required
 def ngoiSaoHiVong(request):
     global currentNSHVer
     global allNSHVers
@@ -261,6 +268,7 @@ def ngoiSaoHiVong(request):
         print(currentRinger, " da chon NSHV!")
         return HttpResponse("Ngoi sao hi vong!")
 
+@login_required
 def resetNSHVState(request):
     """
     Function to reset the state of the bell
@@ -289,7 +297,49 @@ def beginOrStopAcceptingAnswer(request):
         acceptingAnswer = not acceptingAnswer
     
     return HttpResponse("Success")
-        
+
+@login_required
+def beginAcceptingGQ(request):
+    """
+    The fucntion to handle request of begin accepting answer from thi sinh
+    """
+    global acceptingGQ
+
+    if request.user.is_staff:
+        acceptingGQ = True
+    
+    return HttpResponse("Success")
+
+@login_required
+def stopAcceptingGQ(request):
+    """
+    The fucntion to handle request of begin accepting answer from thi sinh
+    """
+    global acceptingGQ
+
+    if request.user.is_staff:
+        acceptingGQ = False
+        gianhQuyenUser = ""
+    
+    return HttpResponse("Success")
+
+@login_required
+def gianhQuyen(request):
+    global acceptingGQ, gianhQuyenUser
+    
+    if request.method == "GET":
+        result = {"gianhQuyenUser": gianhQuyenUser,
+                    "acceptingGQ": acceptingGQ}
+        return JsonResponse(json.dumps(result), safe=False)
+    elif request.method == "POST":
+        if not acceptingGQ:
+            return HttpResponseForbidden()
+        if gianhQuyenUser == "":
+            gianhQuyenUser = str(request.user)
+            print(gianhQuyenUser, "gianh quyen tra loi!")
+        return HttpResponse("Success") 
+
+    return HttpResponseForbidden()    
 
 @login_required
 def getDapAnThiSinh(request):

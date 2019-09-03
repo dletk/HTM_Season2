@@ -2,6 +2,7 @@ from django.urls import path
 from .views import score, currentQuestion, updateRound
 from .views import NewAnswer
 from .views import ringBell, resetRingingState
+from .views import gianhQuyen, beginAcceptingGQ, stopAcceptingGQ
 from .views import ngoiSaoHiVong, resetNSHVState
 from .views import beginOrStopAcceptingAnswer, getDapAnThiSinh
 
@@ -17,6 +18,10 @@ urlpatterns = [
     # Handle ringing request
     path("ringBell/", ringBell, name="ringBell"),
     path("resetRingingState/", resetRingingState, name="resetRingingState"),
+    # Handle gianhQuyen request
+    path("gianhQuyen/", gianhQuyen, name="gianhQuyen"),
+    path("beginAcceptingGQ/", beginAcceptingGQ, name="beginAcceptingGQ"),
+    path("stopAcceptingGQ/", stopAcceptingGQ, name="stopAcceptingGQ"),
     # Handle ngoiSaoHiVong request
     path("ngoiSaoHiVong/", ngoiSaoHiVong, name="ngoiSaoHiVong"),
     path("resetNSHVState/", resetNSHVState, name="resetNSHVState"),
