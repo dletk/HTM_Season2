@@ -230,7 +230,7 @@
     var hard_questions = [];
 
     // Intialize media files
-    var demgioBamChuong =  new Audio("{% static 'chinhphuc/VeDich5sConLai.mp3' %}");
+    var demgioBamChuong =  new Audio("{% static 'chinhphuc/ChinhPhuc_BamChuong.mp3' %}");
 
     // Store all questions in an array
     let questions = {{ questions|safe }};
@@ -382,7 +382,7 @@
     let bamChuongCountDownProgressBar = $("#bamChuongCountDownProgressBar");
 
     bamChuongCountDownProgressBar.click(function(){
-        demgioBamChuong =  new Audio("{% static 'chinhphuc/VeDich5sConLai.mp3' %}");
+        demgioBamChuong =  new Audio("{% static 'chinhphuc/ChinhPhuc_BamChuong.mp3' %}");
         demgioBamChuong.play();
         // Start accepting gianhQuyen
         sendSignalGQ(true);
@@ -536,6 +536,17 @@
         });        
     }
 
+    function sendSignalResetGQ(){
+        $.ajax({
+            url: "{% url 'resetGQState' %}",
+            method: "POST",
+            traditional: true,
+            success: function(data){
+                // do nothing
+            }
+        });
+    }
+
     gianhQuyenDialog = $("#gianhQuyenDialog");
 
     gianhQuyenDialog.dialog({
@@ -545,6 +556,7 @@
 
     $("#resetGQBtn").click(function(){
         sendSignalGQ(false);
+        sendSignalResetGQ();
         gianhQuyenDialog.dialog('close');
     });
 

@@ -319,8 +319,16 @@ def stopAcceptingGQ(request):
 
     if request.user.is_staff:
         acceptingGQ = False
-        gianhQuyenUser = ""
     
+    return HttpResponse("Success")
+
+@login_required
+def resetGQState(request):
+    global gianhQuyenUser
+
+    if request.user.is_staff:
+        gianhQuyenUser = ""
+
     return HttpResponse("Success")
 
 @login_required
@@ -330,6 +338,7 @@ def gianhQuyen(request):
     if request.method == "GET":
         result = {"gianhQuyenUser": gianhQuyenUser,
                     "acceptingGQ": acceptingGQ}
+        print(result)
         return JsonResponse(json.dumps(result), safe=False)
     elif request.method == "POST":
         if not acceptingGQ:
