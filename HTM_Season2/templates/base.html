@@ -114,7 +114,37 @@
     </div>
 
     <div id="nhoNeoRuleDialog" title="NHỔ NEO" class="ruleDialog">
-        <p id="nhoNeoRuleContent" style="font-size: 24px; text-align: justify;">Tất cả các thí sinh trả lời 12 câu hỏi hình ảnh, audio hoặc video, mỗi câu hỏi trong vòng 15s. Thí sinh trả lời đúng và nhanh nhất được 15 điểm, những thí sinh khác trả lời đúng được 10 điểm.</p>
+        <p id="nhoNeoRuleContent" style="font-size: 24px; text-align: justify;">
+            Tất cả các thí sinh trả lời 12 câu hỏi hình ảnh, audio hoặc video, mỗi câu hỏi trong vòng 15s. Thí sinh trả lời đúng và nhanh nhất được 15 điểm, những thí sinh khác trả lời đúng được 10 điểm.
+            <br>
+        </p>
+        <center>
+            <button class="btn btn-success closeDialogBtn">Đóng</button>
+        </center>
+    </div>
+
+    <div id="vuotSongRuleDialog" title="VƯỢT SÓNG" class="ruleDialog">
+        <p id="vuotSongRuleContent" style="font-size: 24px; text-align: justify;">
+            - Các thí sinh sẽ phải tìm ra một CNV nhưng <b>không cho biết số lượng chữ cái</b> của CNV, 6 hàng ngang gợi ý liên quan đến CNV được sắp xếp ngang dọc tùy ý và có thể giao nhau ở các kí tự chung. Mở mỗi hàng ngang có các ô <b>được tô màu xanh gợi ý các chữ cái có trong CNV</b>. Các thí sinh ấn chuông giành quyền trả lời CNV bất cứ lúc nào nhưng sai sẽ bị loại khỏi phần thi. 
+            <br><br>
+            - Thí sinh trả lời đúng và nhanh nhất được 15 điểm, các thí sinh khác trả lời đúng được 10 điểm. 
+            <br><br>
+            - Trả lời đúng CNV sau khi mở n hàng ngang được <b>(7-n)*15 điểm</b>.
+            <br><br>
+            - Sau khi mở tất cả các hàng ngang mà vẫn chưa có thí sinh nào trả lời đúng CNV. Cơ hội sẽ dành cho khán giả.
+        </p>
+        <center>
+            <button class="btn btn-success closeDialogBtn">Đóng</button>
+        </center>
+    </div>
+
+    <div id="butPhaRuleDialog" title="BỨT PHÁ" class="ruleDialog">
+        <p id="butPhaRuleContent" style="font-size: 24px; text-align: justify;">
+            - Các thí sinh giành lượt đi trước bằng <b>câu hỏi phân lượt</b>, thí sinh nào trả lời đúng và nhanh hơn sẽ giành được quyền ưu tiên trong phần thi này.
+            <br><br>
+            - Các thí sinh sẽ thi đấu 2 lượt. Sẽ có những gói câu hỏi thuộc nhiều lĩnh vực và tới lượt mỗi thí sinh, chọn 1 lĩnh vực trong số những lĩnh vực chưa được chọn trước đó và trả lời trong vòng 60s. Tối đa 15 câu trong mỗi gói, trả lời đúng mỗi câu được 10 điểm.
+            <br><br>
+        </p>
         <center>
             <button class="btn btn-success closeDialogBtn">Đóng</button>
         </center>
@@ -122,15 +152,16 @@
 
     <div id="chinhPhucRuleDialog" title="CHINH PHỤC" class="ruleDialog">
         <p id="chinhPhucRuleContent" style="font-size: 24px; text-align: justify;">
-            - Các thí sinh tiếp tục giành lượt đi trước bằng câu hỏi phân lượt.
-            <br>
-            - Sẽ có một bảng số gồm 6*6 ô vuông gồm các ô vuông trống, ô vuông chấm than và ô vuông chấm hỏi với các mức điểm tương ứng lần lượt là 10, 20, 30.
-            <br> 
-            - Mỗi thí sinh tới lượt mình chọn một ô và trả lời câu hỏi, đúng được tô màu vào ô đó. Sai các thí sinh khác ấn chuông giành quyền trả lời sau hiệu lệnh của MC. Trả lời đúng được tô màu của mình vào ô đó và lấy đi số điểm của câu hỏi từ người chọn . Sai sẽ bị trừ một nửa số điểm của câu hỏi .
-            <br> 
-            - Mỗi thí sinh có quyền đặt ngôi sao hy vọng vào bất kỳ lúc nào ( chỉ được đặt một lần ). Trả lời đúng câu hỏi có NSHV được thêm số điểm câu hỏi và được chọn thêm một ô nữa để trả lời, trả lời sai bị trừ số điểm bằng số điểm của câu hỏi. 
-            <br>
+            - Các thí sinh tiếp tục giành quyền chọn thứ tự của mình bằng <b>câu hỏi phân lượt</b>. Ai trả lời đúng và nhanh hơn theo thứ tự sẽ <b>được chọn thứ tự của mình</b>.
+            <br><br>
+            - Sẽ có một bảng số gồm 6*6 ô vuông gồm các ô vuông trống, ô vuông chấm than và ô vuông chấm hỏi với các mức điểm tương ứng lần lượt là 10, 20, 30. 
+            <br><br>
+            - Mỗi thí sinh tới lượt mình chọn một ô và trả lời câu hỏi, đúng được tô màu của mình vào ô đó, sai các thí sinh khác ấn chuông giành quyền trả lời sau hiệu lệnh của MC. Trả lời đúng được tô màu của mình vào ô đó và lấy đi số điểm của câu hỏi từ người chọn. Sai sẽ bị trừ một nửa số điểm của câu hỏi. 
+            <br><br>
+            - Mỗi thí sinh có quyền đặt <b>ngôi sao hy vọng</b> vào bất kỳ lúc nào (chỉ được đặt một lần). Trả lời đúng câu hỏi có NSHV được thêm số điểm câu hỏi và được chọn thêm một ô nữa để trả lời, trả lời sai bị trừ số điểm bằng số điểm của câu hỏi.
+            <br><br> 
             - Mỗi thí có 4 lượt chơi và nếu có một thí sinh tạo được một đường ngang dọc hoặc chéo với 4 ô màu của mình liên tiếp thì sẽ được cộng thêm 50 điểm. Mỗi thí sinh chỉ được + 50 điểm một lần.
+            <br><br>
         </p>
         <center>
             <button class="btn btn-success closeDialogBtn">Đóng</button>
@@ -188,6 +219,44 @@
             nhoNeoRuleDialog.dialog("open");
         }
     });
+
+    vuotSongRuleDialog = $("#vuotSongRuleDialog");
+
+    vuotSongRuleDialog.dialog({
+        modal: true,
+        autoOpen: false,
+        minWidth: 800,
+    });
+
+    $(".vuotSongRule").click(function(){
+        if(vuotSongRuleDialog.dialog("isOpen")){
+            // already open
+        }
+        else{
+            // the dialog has not been opened yet
+            vuotSongRuleDialog.dialog("open");
+        }
+    });
+
+
+    butPhaRuleDialog = $("#butPhaRuleDialog");
+
+    butPhaRuleDialog.dialog({
+        modal: true,
+        autoOpen: false,
+        minWidth: 750,
+    });
+
+    $(".butPhaRule").click(function(){
+        if(butPhaRuleDialog.dialog("isOpen")){
+            // already open
+        }
+        else{
+            // the dialog has not been opened yet
+            butPhaRuleDialog.dialog("open");
+        }
+    });
+
 
     chinhPhucRuleDialog = $("#chinhPhucRuleDialog");
 
