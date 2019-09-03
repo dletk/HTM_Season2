@@ -147,6 +147,7 @@
         </b>
         {% endif %}
         <button class="btn btn-success" id="toggleNavbar">Ẩn/hiện menu</button>
+        <button class="btn btn-info" id="playOST">Nhạc nền</button>
     </div>
 </footer>
 
@@ -156,6 +157,12 @@
 <script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'bootstrap-colorselector.min.js' %}"></script>
 <script>
+    $("#playOST").click(function(){
+        var ost = new Audio(ost_path);
+        ost.play();
+        $(this).hide();
+    });
+
     $("#toggleNavbar").click(function(){
         $("#mainNavbar").toggle();
     });
