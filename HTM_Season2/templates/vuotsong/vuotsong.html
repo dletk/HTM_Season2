@@ -892,6 +892,8 @@ $("#showAnswer").click(function(event){
 });
 
 $("#wrongAnswer").click(function(event){
+  var wrongSoundtrack = new Audio("{% static 'vuotsong/VuotSong_CauSai.mp3' %}");
+  wrongSoundtrack.play();
   // Change bg color to gray for wrong answers
   currentQuestionID = parseInt(document.getElementById("id_ochu").value);
   $(".letterOf" + currentQuestionID.toString()).css("background-color", "#808080");
