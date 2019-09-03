@@ -15,11 +15,12 @@
 {% endblock %}
 
 {% block content %}
-    {% for score in scores %}
+    {% for thisinh in userlist %}
         <div class="thisinh col-12">
             <div class="row">
-                <span class="name col-6">{{ score.user }}: </span>
-                <input class="diem col-6" type="number" id="{{score.user.username}}" value="{{score.score}}">
+                <img class="img-responsive" width="75" height="75" class="col-1" src="/media/{{ thisinh.avatar }}">
+                <span class="name col-4">{{ thisinh.user }}: </span>
+                <input class="diem col-6" type="number" id="{{thisinh.user.username}}" value="{{thisinh.score}}">
             </div>
         </div>
     {% endfor %}

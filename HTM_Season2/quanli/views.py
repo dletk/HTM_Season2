@@ -63,7 +63,11 @@ def score(request, username=None, score=None):
         if username is None:
             # This request is for grading info
             scores = diemThiSinhManager.getAllScore()
-            return render(request, template_name="quanli/score.html", context={"scores": scores, "footerDisplay": True})
+            userlist = []
+            for score in scores:
+                print("***", score.user.profile_pic)
+                userlist.append({"score": score.score, "user": score.user, "avatar": score.user.profile_pic})
+            return render(request, template_name="quanli/score.html", context={"scores": scores, "userlist": userlist, "footerDisplay": True})
         else:
             # This request is for updating
             if request.user.is_staff:
