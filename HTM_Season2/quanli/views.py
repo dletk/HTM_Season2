@@ -380,11 +380,14 @@ def getDapAnThiSinh(request):
 
     # Get all the id of thisinh that submit the answer
     # thisinh_id = set([thisinh["thisinh"] for thisinh in answers.values("thisinh")])
-    thisinh_id = []
+    
+    cnt = 1
+    last_time = {}
     for thisinh in answers.values("thisinh"):
-        if thisinh["thisinh"] in thisinh_id:
-            continue
-        thisinh_id.append(thisinh["thisinh"])
+        last_time[ thisinh["thisinh"] ] = cnt
+        cnt += 1
+    print("***", last_time)
+    thisinh_id = sorted(last_time, key=last_time.get)
     
     # Go through the answers and only retrieve the final answer of each
     final_answers = []
